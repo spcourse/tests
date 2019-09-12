@@ -37,21 +37,21 @@ def containsRequiredFunctionDefinitions(test):
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
 	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "tunnel")
-	test.description = lambda : "definieert de functie `tunnel()`"
+	test.description = lambda : "defines the function `tunnel()`"
 
 @t.test(1)
 def showsGraph(test):
 	test.test = lambda : assertlib.fileContainsFunctionCalls(_fileName, "savefig")
-	test.description = lambda : "slaat een grafiek op"
+	test.description = lambda : "saves a plot"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(10)
 def correctMaxSpeed(test):
 	test.test = lambda : assertlib.numberOnLine(28474.32, lib.getLine(lib.outputOf(_fileName), 0), deviation = 500)
-	test.description = lambda : "print de maximale snelheid van de appel"
+	test.description = lambda : "prints the maximum speed reached by the apple"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(11)
 def correctTimeTillReturn(test):
 	test.test = lambda : assertlib.numberOnLine(5061, lib.getLine(lib.outputOf(_fileName), 1), deviation = 50)
-	test.description = lambda : "print het tijdstip van terugkeer na loslaten"
+	test.description = lambda : "prints the number of seconds elapsed upon return"

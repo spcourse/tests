@@ -37,9 +37,9 @@ def correctDistance(test):
 		correctM = assertlib.numberOnLine(10860, line, deviation = 20)
 		return correctKm or correctM
 	test.test = testMethod
-	test.description = lambda : "print de afgelegde afstand"
+	test.description = lambda : "prints the distance traveled"
 
 @t.test(1)
 def showsGraph(test):
 	test.test = lambda : assertlib.fileContainsFunctionCalls(_fileName, "savefig") or assertlib.fileContainsFunctionCalls(_fileName, "show")
-	test.description = lambda : "slaat een grafiek op, of laat een grafiek zien"
+	test.description = lambda : "either saves a plot or shows one"

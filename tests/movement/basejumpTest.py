@@ -37,16 +37,16 @@ def containsRequiredFunctionDefinitions(test):
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
 	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "basejump")
-	test.description = lambda : "definieert de functie `basejump()`"
+	test.description = lambda : "defines the function `basejump()`"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(10)
 def correctTimeTillParachute(test):
 	test.test = lambda : assertlib.numberOnLine(12.18, lib.getLine(lib.outputOf(_fileName), 0), deviation = 0.1)
-	test.description = lambda : "print de tijd die verstrijkt tot de parachute open moet (zonder luchtweerstand)"
+	test.description = lambda : "prints the number of seconds elapsed until the parachute opens"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(11)
 def correctExtraTime(test):
 	test.test = lambda : assertlib.numberOnLine(5.06, lib.getLine(lib.outputOf(_fileName), 1), deviation = 0.1)
-	test.description = lambda : "print de tijd die er bij komt door de luchtweerstand"
+	test.description = lambda : "prints the number of seconds added to that because of air resistance"

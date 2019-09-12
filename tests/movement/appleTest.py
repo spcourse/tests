@@ -36,23 +36,23 @@ def containsRequiredFunctionDefinitions(test):
 	notAllowed = {"break": "break"}
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "appel")
-	test.description = lambda : "definieert de functie `appel()`"
+	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "apple")
+	test.description = lambda : "defines the function `appel()`"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(1)
 def correctTime(test):
 	test.test = lambda : assertlib.numberOnLine(4.51, lib.getLine(lib.outputOf(_fileName), 0), deviation = 0.01)
-	test.description = lambda : "print het tijdstip waarop de appel de grond raakt"
+	test.description = lambda : "prints the number of seconds after which the apple touches the ground"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(2)
 def correctSpeed(test):
 	test.test = lambda : assertlib.numberOnLine(159.5, lib.getLine(lib.outputOf(_fileName), 1), deviation = 0.1)
-	test.description = lambda : "print de snelheid waarmee de appel de grond raakt"
+	test.description = lambda : "prints the speed with which the apple touches the ground"
 
 @t.passed(containsRequiredFunctionDefinitions)
 @t.test(3)
 def correctSecondsToHit100(test):
 	test.test = lambda : assertlib.numberOnLine(2.83, lib.getLine(lib.outputOf(_fileName), 2), deviation = 0.01)
-	test.description = lambda : "print het tijdstip waarop een snelheid van 100km/u wordt bereikt"
+	test.description = lambda : "prints the number of seconds after which the speed reaches 100 km/h"
