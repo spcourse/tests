@@ -35,7 +35,7 @@ def correctHighestTemp(test):
 	def testMethod():
 		correctAnswer = "36.8"
 		if helpers.isHardcodedIn(correctAnswer, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. {} staat in de source code!".format(correctAnswer)
+			test.success = lambda info : "watch out: {} appears to be hardcoded!".format(correctAnswer)
 
 		output = lib.outputOf(
 			test.fileName,
@@ -44,14 +44,14 @@ def correctHighestTemp(test):
 		return assertlib.contains(output, correctAnswer)
 
 	test.test = testMethod
-	test.description = lambda : "print hoogste temperatuur"
+	test.description = lambda : "prints the highest temperature"
 
 @t.passed(correctHighestTemp)
 @t.test(11)
 def correctDateHighestTemp(test):
 	def testMethod():
 		if helpers.isHardcodedIn(1947, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. 1947 staat in de source code!"
+			test.success = lambda info : "watch out: 1947 appears to be hardcoded!"
 
 		output = lib.outputOf(
 			test.fileName,
@@ -65,14 +65,14 @@ def correctDateHighestTemp(test):
 		return correctDay and correctMonth and correctYear
 
 	test.test = testMethod
-	test.description = lambda : "print datum hoogste temperatuur"
+	test.description = lambda : "prints the date of the highest temperature"
 
 @t.test(20)
 def correctLowestTemp(test):
 	def testMethod():
 		correctAnswer = "-24.8"
 		if helpers.isHardcodedIn(correctAnswer, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. {} staat in de source code!".format(correctAnswer)
+			test.success = lambda info : "watch out: {} appears to be hardcoded!".format(correctAnswer)
 
 		output = lib.outputOf(
 			test.fileName,
@@ -81,14 +81,14 @@ def correctLowestTemp(test):
 		return assertlib.contains(output, correctAnswer)
 
 	test.test = testMethod
-	test.description = lambda : "print laagste temperatuur"
+	test.description = lambda : "prints the lowest temperature"
 
 @t.passed(correctLowestTemp)
 @t.test(21)
 def correctDateLowestTemp(test):
 	def testMethod():
 		if helpers.isHardcodedIn(1942, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. 1942 staat in de source code!"
+			test.success = lambda info : "watch out: 1942 appears to be hardcoded!"
 
 		output = lib.outputOf(
 			test.fileName,
@@ -102,14 +102,14 @@ def correctDateLowestTemp(test):
 		return correctDay and correctMonth and correctYear
 
 	test.test = testMethod
-	test.description = lambda : "print datum laagste temperatuur"
+	test.description = lambda : "prints the date of the lowest temperature"
 
 @t.test(30)
 def correctLongestFreezing(test):
 	def testMethod():
 		correctAnswer = "21"
 		if helpers.isHardcodedIn(correctAnswer, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. {} staat in de source code!".format(correctAnswer)
+			test.success = lambda info : "watch out: {} appears to be hardcoded!".format(correctAnswer)
 
 		output = lib.outputOf(
 			test.fileName,
@@ -125,7 +125,7 @@ def correctLongestFreezing(test):
 def correctDateLongestFreezingp(test):
 	def testMethod():
 		if helpers.isHardcodedIn(1947, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. 1947 staat in de source code!"
+			test.success = lambda info : "watch out: 1947 appears to be hardcoded!"
 
 		output = lib.outputOf(
 			test.fileName,
@@ -139,14 +139,14 @@ def correctDateLongestFreezingp(test):
 		return correctDay and correctMonth and correctYear
 
 	test.test = testMethod
-	test.description = lambda : "print laatste dag van de langste periode dat het aaneengesloten heeft gevroren"
+	test.description = lambda : "prints the last day of the longest freezing period"
 
 @t.test(40)
 def correctFirstHeatWave(test):
 	def testMethod():
 		correctAnswer = "1911"
 		if helpers.isHardcodedIn(correctAnswer, test.fileName):
-			test.success = lambda info : "let op: deze output is hardcoded. {} staat in de source code!".format(correctAnswer)
+			test.success = lambda info : "watch out: {} appears to be hardcoded!".format(correctAnswer)
 
 		output = lib.outputOf(
 			test.fileName,
@@ -155,9 +155,9 @@ def correctFirstHeatWave(test):
 		return assertlib.contains(output, correctAnswer)
 
 	test.test = testMethod
-	test.description = lambda : "print het eerste jaartal waarin er sprake was van een hittegolf"
+	test.description = lambda : "prints the first year that had a heatwave"
 
 @t.test(50)
 def showsGraph(test):
 	test.test = lambda : assertlib.fileContainsFunctionCalls(_fileName, "savefig") or assertlib.fileContainsFunctionCalls(_fileName, "show")
-	test.description = lambda : "slaat een grafiek op, of laat een grafiek zien"
+	test.description = lambda : "either saves a plot to image, or shows it"
