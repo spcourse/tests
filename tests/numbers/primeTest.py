@@ -23,6 +23,7 @@ def exact1(test):
 def exact1000(test):
 	test.test = lambda : assertlib.numberOnLine(7919, lib.getLine(lib.outputOf(_fileName, stdinArgs=[1000]), 0))
 	test.description = lambda : "input of 1000 yields output of 7919"
+	test.timeout = lambda : 90
 
 @t.passed(exact1)
 @t.test(30)

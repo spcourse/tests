@@ -23,9 +23,11 @@ def correctBarriers(test):
 
 	test.description = lambda : "prints the correct start and end of the sequence"
 	test.fail = lambda info : "note that primes are not actually part of the sequence!"
+	test.timeout = lambda : 90
 
 @t.test(10)
 def correctDistance(test):
 	test.test = lambda : assertlib.numberOnLine(35, lib.getLine(lib.outputOf(_fileName), 1))
 	test.fail = lambda info : "is it printed on a separate second line?"
 	test.description = lambda : "prints the correct length of the sequence"
+	test.timeout = lambda : 90
