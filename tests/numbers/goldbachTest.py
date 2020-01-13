@@ -28,6 +28,7 @@ def allEvenNumbersInOutput(test):
 	test.test = testMethod
 
 	test.description = lambda : "output contains all even numbers below 1000"
+	test.timeout = lambda : 90
 
 @t.test(1)
 def allCalculationsCorrect(test):
@@ -43,6 +44,7 @@ def allCalculationsCorrect(test):
 	test.test = testMethod
 
 	test.description = lambda : "calculations on each line are correct"
+	test.timeout = lambda : 90
 
 @t.test(2)
 def allCalculationsContainTwoPrimes(test):
@@ -59,3 +61,4 @@ def allCalculationsContainTwoPrimes(test):
 	test.test = testMethod
 
 	test.description = lambda : "calculations on each line contain precisely two primes"
+	test.timeout = lambda : 90
