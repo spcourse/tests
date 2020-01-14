@@ -115,4 +115,4 @@ def Correctaverage_word_length(test):
         return assertlib.exact(lib.getFunction(function_name, _fileName)(test_text), 40/9)
 
     test.test = testMethod
-    test.description = lambda : "Finds the correct number of sentences in a text."
+    test.description = lambda : "Finds the correct average length of words in a sentence."
