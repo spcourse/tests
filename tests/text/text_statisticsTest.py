@@ -65,7 +65,7 @@ def Correctnumber_of_words_in(test):
 
 @t.test(2)
 def Correctnumber_of_sentences_in(test):
-    test_text = "But could a flame. ever burn. for a match and a stick?"
+    test_text = "But could a flame. ever burn. for a match and a stick."
     function_name = "number_of_sentences_in"
     
     def testMethod():
@@ -84,7 +84,7 @@ def Correctnumber_of_sentences_in(test):
             info = "Make sure you return an integer and nothing else."
             return False, info
                 
-        return assertlib.exact(lib.getFunction(function_name, _fileName)(test_text), len(test_text.split(".")))
+        return assertlib.exact(lib.getFunction(function_name, _fileName)(test_text), len(test_text.split(".")) -1)
 
     test.test = testMethod
     test.description = lambda : "Finds the correct number of sentences in a text."
