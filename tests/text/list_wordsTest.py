@@ -45,7 +45,7 @@ def Correctfor_empty_1word(test):
 
 @t.test(1)
 def Correctfor_sentence(test):
-    test_text = "Stick Boy's Festive Season"
+    test_text = "Stick Boy's Festive, Season."
     function_name = "text_to_unique_words"
 
     correctlist = ['stick', "boy's", 'festive', 'season']
@@ -63,13 +63,17 @@ def Correctfor_sentence(test):
         correct_return = assertlib.sameType(lib.getFunction(function_name, _fileName)(test_text), [])
         if not correct_return:
             return False
-
-        if "boy's" not in lib.getFunction(function_name, _fileName)(test_text):
-            info = "Make sure to deal in the right way with punctuations."
-            return False, info
-
+        
         output = lib.getFunction(function_name, _fileName)(test_text)
         output.sort()
+        
+        if "boy's" not in output:
+            info = "Make sure to deal in the right way with punctuations."
+            return False, info
+        
+        if "festive," in output or "season." in output:
+            info = "Make sure there are no periods and/or commas left in list."
+
         return output == correctlist
 
     test.test = testMethod
