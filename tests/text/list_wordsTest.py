@@ -82,7 +82,7 @@ def Correctfor_sentence(test):
 
 @t.test(2)
 def Correctfor_complex_sentence(test):
-    test_text = "Stick  Boy noticed that his  Christmas tree, looked  healtier than he did."
+    test_text = "Stick  Boy noticed that his  Christmas tree, looked  healtier than he did"
     function_name = "text_to_unique_words"
 
     correctlist = ['stick', 'boy', 'noticed', 'that', 'his', 'christmas', 'tree', 'looked', 'healtier', 'than', 'he', 'did']
@@ -115,7 +115,7 @@ def Correctfor_complex_sentence(test):
 
 @t.test(3)
 def Aplhabetically(test):
-    test_text = "Unwisely, Santa offered a teddy bear to James, unaware that he had been mauled by a grizzly earlier that year."
+    test_text = "Unwisely Santa offered a teddy bear to James unaware that he had been mauled by a grizzly earlier that year"
     function_name = "text_to_unique_words"
     correctlist = ['a', 'bear', 'been', 'by', 'earlier', 'grizzly', 'had', 'he', 'james', 'mauled', 'offered', 'santa', 'teddy', 'that', 'to', 'unaware', 'unwisely', 'year']
 
