@@ -6,6 +6,10 @@ import importlib
 # Test once again test if the function is in the code with the right amount of 
 # arguments and right type of return, but only gives a mesage at test 0.
 
+def sandbox():
+	lib.require("pos_words.txt", "https://progbg.mprog.nl/course/22%20Text/35%20Sentiment/pos_words.txt")
+	lib.require("neg_words.txt", "https://progbg.mprog.nl/course/22%20Text/35%20Sentiment/neg_words.txt")
+
 
 @t.test(0)
 def Correctfor_pos(test):
