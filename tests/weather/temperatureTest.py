@@ -6,8 +6,8 @@ import helpers
 import re
 
 def sandbox():
-	lib.require("DeBiltTempMax.txt", "http://www.nikhef.nl/~ivov/Python/KlimaatData/OLD/DeBiltTempMaxOLD.txt")
-	lib.require("DeBiltTempMin.txt", "http://www.nikhef.nl/~ivov/Python/KlimaatData/OLD/DeBiltTempMinOLD.txt")
+	lib.require("DeBiltTempMaxOLD.txt", "http://www.nikhef.nl/~ivov/Python/KlimaatData/OLD/DeBiltTempMaxOLD.txt")
+	lib.require("DeBiltTempMinOLD.txt", "http://www.nikhef.nl/~ivov/Python/KlimaatData/OLD/DeBiltTempMinOLD.txt")
 
 
 def before():
