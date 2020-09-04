@@ -3,25 +3,25 @@ import checkpy.lib as lib
 import checkpy.assertlib as assertlib
 import importlib
 
-# Test once again test if the function is in the code with the right amount of 
+# Test once again test if the function is in the code with the right amount of
 # arguments and right type of return, but only gives a mesage at test 0.
 
 def sandbox():
-	lib.require("pos_words.txt", "https://progbg.mprog.nl/course/22%20Text/35%20Sentiment/pos_words.txt")
-	lib.require("neg_words.txt", "https://progbg.mprog.nl/course/22%20Text/35%20Sentiment/neg_words.txt")
+	lib.require("pos_words.txt", "https://sp1.mprog.nl/course/modules/text/en/sentiment/pos_words.txt")
+	lib.require("neg_words.txt", "https://sp1.mprog.nl/course/modules/text/en/sentiment/neg_words.txt")
 
 
 @t.test(0)
 def Correctfor_pos(test):
     test_text = "Coronet has the best lines of all day cruisers."
     function_name = "sentiment_of_text"
-    
+
     def testMethod():
         hasfunction = assertlib.fileContainsFunctionDefinitions(_fileName, function_name)
         if not hasfunction:
             info = "Make sure you use a function named " + function_name + " as you're writing your code."
             return False, info
-        
+
         nArguments = len(lib.getFunction(function_name, _fileName).arguments)
         if nArguments != 1:
             info = "Make sure your function has 1 argument."
@@ -42,12 +42,12 @@ def Correctfor_pos(test):
 def Correctfor_neu(test):
     test_text = "Bertram has a deep V hull and runs easily through seas."
     function_name = "sentiment_of_text"
-    
+
     def testMethod():
         hasfunction = assertlib.fileContainsFunctionDefinitions(_fileName, function_name)
         if not hasfunction:
             return False
-        
+
         nArguments = len(lib.getFunction(function_name, _fileName).arguments)
         if nArguments != 1:
             return False
@@ -66,12 +66,12 @@ def Correctfor_neu(test):
 def Correctfor_neg(test):
     test_text = "I dislike old cabin cruisers."
     function_name = "sentiment_of_text"
-    
+
     def testMethod():
         hasfunction = assertlib.fileContainsFunctionDefinitions(_fileName, function_name)
         if not hasfunction:
             return False
-        
+
         nArguments = len(lib.getFunction(function_name, _fileName).arguments)
         if nArguments != 1:
             return False
