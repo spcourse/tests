@@ -81,10 +81,10 @@ def correctAverageTrump(test):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		# starting money 2 player
-		elif nArguments == 3:
-			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1000000, 0)
-			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _filename)(1000, 1000000, 0), None):
-				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+		# elif nArguments == 3:
+		# 	testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1000000, 0)
+		# 	if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _filename)(1000, 1000000, 0), None):
+		# 		test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		else:
 			testInput = False
@@ -110,11 +110,11 @@ def correctAverageStartingMoney(test):
 			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500), None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 			return testInput
-		elif nArguments == 3:
-			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0)
-			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0), None):
-				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
-			return testInput
+		# elif nArguments == 3:
+		# 	testInput = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0)
+		# 	if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0), None):
+		# 		test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+		# 	return testInput
 		else:
 			return 0
 
