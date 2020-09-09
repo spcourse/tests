@@ -12,104 +12,112 @@ sys.path.append(parpath)
 from notAllowedCode import *
 
 def before():
-    import matplotlib.pyplot as plt
-    plt.switch_backend("Agg")
-    lib.neutralizeFunction(plt.pause)
-    # lib.neutralizeFunction(matplotlib.use)
+	import matplotlib.pyplot as plt
+	plt.switch_backend("Agg")
+	lib.neutralizeFunction(plt.pause)
+	# lib.neutralizeFunction(matplotlib.use)
 
 def after():
-    import matplotlib.pyplot as plt
-    plt.switch_backend("TkAgg")
-    importlib.reload(plt)
+	import matplotlib.pyplot as plt
+	plt.switch_backend("TkAgg")
+	importlib.reload(plt)
 
 @t.test(0)
-def hasworp_met_twee_dobbelstenen(test):
+def hasthrow_two_dice(test):
 
 	notAllowed = {"break": "break"}
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "worp_met_twee_dobbelstenen")
-	test.description = lambda : "definieert de functie worp_met_twee_dobbelstenen"
+	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "throw_two_dice")
+	test.description = lambda : "defines the function throw_two_dice"
 	test.timeout = lambda : 60
 
-
-@t.passed(hasworp_met_twee_dobbelstenen)
+@t.passed(hasthrow_two_dice)
 @t.test(10)
 def correctDice(test):
-	test.test = lambda : assertlib.between(lib.getFunction("worp_met_twee_dobbelstenen", _fileName)(), 2, 12)
-	test.description = lambda : "returnt een correcte waarde voor een worp van twee dobbelstenen"
+	test.test = lambda : assertlib.between(lib.getFunction("throw_two_dice", _fileName)(), 2, 12)
+	test.description = lambda : "returns a correct value for a throw with two dice"
 	test.timeout = lambda : 120
-
 
 @t.passed(correctDice)
 @t.test(20)
-def hassimuleer_potjeAndsimuleer_groot_aantal_potjes_monopoly(test):
+def hassimulate_monopolyAndsimulate_monopoly_games(test):
 
 	def testMethod():
-		test_potje = assertlib.fileContainsFunctionDefinitions(_fileName, "simuleer_potje_monopoly")
-		test_groot_aantal_potjes = assertlib.fileContainsFunctionDefinitions(_fileName, "simuleer_groot_aantal_potjes_monopoly")
+		test_game = assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_monopoly")
+		test_games = assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_monopoly_games")
 		info = ""
-		if not test_potje:
-			info = "de functie simuleer_potje_monopoly is nog niet gedefinieerd"
-		elif not test_groot_aantal_potjes:
-			info = "de functie simuleer_potje_monopoly is gedefinieerd :) \n  - de functie simuleer_groot_aantal_potjes_monopoly nog niet"
-		return test_potje and test_groot_aantal_potjes, info
+		if not test_game:
+			info = "the function simulate_monopoly has not been defined"
+		elif not test_games:
+			info = "the function simulate_monopoly has been defined :) \n  -the function simulate_monopoly_games has not yet been defined"
+		return test_game and test_games, info
 
 
 
 	test.test = lambda : testMethod()
-	test.description = lambda : "definieert de functie simuleer_potje_monopoly en simuleer_groot_aantal_potjes_monopoly"
+	test.description = lambda : "defines the functions simulate_monopoly and simulate_monopoly_games"
 	test.timeout = lambda : 60
 
 
-@t.passed(hassimuleer_potjeAndsimuleer_groot_aantal_potjes_monopoly)
+@t.passed(hassimulate_monopolyAndsimulate_monopoly_games)
 @t.test(30)
 def correctAverageTrump(test):
 
 	def testMethod():
-		nArguments = len(lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName).arguments)
+		nArguments = len(lib.getFunction("simulate_monopoly_games", _fileName).arguments)
 
 		# Trump
 		if nArguments == 1:
-			testInput = lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(1000)
-			test.success = lambda info : "De code werkt zonder startgeld, je kunt nu startgeld invoeren!"
-			if assertlib.sameType(lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(10000), None):
-				test.fail = lambda info : "Zorg er voor dat de functie simuleer_groot_aantal_potjes_monopoly het gemiddeld aan benodigde worpen returnt en ook alleen deze waarde returnt"
+			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000)
+			test.success = lambda info : "The code works without starting_money, you can now proceed with starting_money!"
+			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000), None):
+				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
-		# Stargeld, 1 speler
+		# starting money, 1 player
 		elif nArguments == 2:
-			twoArguments = True
-			testInput = lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(1000, 1000000)
-			if assertlib.sameType(lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(10000, 1000000), None):
-				test.fail = lambda info : "Zorg er voor dat de functie simuleer_groot_aantal_potjes_monopoly het gemiddeld aan benodigde worpen returnt en ook alleen deze waarde returnt"
+			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1000000)
+			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1000000), None):
+				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+
+		# starting money 2 player
+		elif nArguments == 3:
+			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1000000, 0)
+			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _filename)(1000, 1000000, 0), None):
+				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		else:
 			testInput = False
-			test.fail = lambda info : "Zorg er voor dat de functie simuleer_groot_aantal_potjes_monopoly bij Trumpmode 1 argument heeft en bij starggeld 2 argumenten"
+			test.fail = lambda info : "Make sure that the function simulate_monopoly_games with Trumpmode uses 1 argument and with starting_money 2 arguments"
 
 		return testInput
 
 	test.test = lambda : assertlib.between(testMethod(), 145, 149)
 	test.test = lambda : testMethod()
-	test.description = lambda : "Monopoly werkt voor Trumpmode"
+	test.description = lambda : "Monopoly works for Trumpmode"
 	test.timeout = lambda : 120
 
 
 @t.passed(correctAverageTrump)
 @t.test(40)
-def correctAverageStartgeld(test):
+def correctAverageStartingMoney(test):
 
 	def testMethod():
-		nArguments = len(lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName).arguments)
+		nArguments = len(lib.getFunction("simulate_monopoly_games", _fileName).arguments)
 
 		if nArguments == 2:
-			testInput = lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(10000, 1500)
-			if assertlib.sameType(lib.getFunction("simuleer_groot_aantal_potjes_monopoly", _fileName)(10000, 1500), None):
-				test.fail = lambda info : "Zorg er voor dat de functie simuleer_groot_aantal_potjes_monopoly het gemiddeld aan benodigde worpen returnt en ook alleen deze waarde returnt"
+			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500)
+			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500), None):
+				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+			return testInput
+		elif nArguments == 3:
+			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0)
+			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 0), None):
+				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 			return testInput
 		else:
 			return 0
 
 	test.test = lambda : assertlib.between(testMethod(), 184, 189)
-	test.description = lambda : "Monopoly werkt met 1500 euro startgeld"
+	test.description = lambda : "Monopoly works with 1500 euro starting_money"
 	test.timeout = lambda : 60
