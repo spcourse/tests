@@ -14,6 +14,12 @@ def before():
 	except ImportError:
 		pass
 
+	try:
+		import numpy
+		numpy.seterr('raise')
+	except ImportError:
+		pass
+
 def after():
 	try:
 		import matplotlib.pyplot as plt

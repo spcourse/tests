@@ -13,10 +13,21 @@ from notAllowedCode import *
 
 
 def before():
-	import matplotlib.pyplot as plt
-	plt.switch_backend("Agg")
-	lib.neutralizeFunction(plt.pause)
-	lib.neutralizeFunction(plt.show)
+	try:
+		import matplotlib
+		matplotlib.use("Agg")
+		import matplotlib.pyplot as plt
+		plt.switch_backend("Agg")
+		lib.neutralizeFunction(plt.pause)
+		lib.neutralizeFunction(plt.show)
+	except ImportError:
+		pass
+
+	try:
+		import numpy
+		numpy.seterr('raise')
+	except ImportError:
+		pass
 
 def after():
 	import matplotlib.pyplot as plt
