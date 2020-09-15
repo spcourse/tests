@@ -13,6 +13,12 @@ def before():
 		lib.neutralizeFunction(plt.pause)
 	except ImportError:
 		pass
+	
+	try:
+		import numpy
+		numpy.seterr('raise')
+	except ImportError:
+		pass
 
 def after():
 	try:
