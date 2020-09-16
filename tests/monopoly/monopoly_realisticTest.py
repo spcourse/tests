@@ -66,7 +66,7 @@ def correctAverageDiff(test):
 		elif assertlib.between(outcome, -99999999, 0):
 			info = "Are you sure you are subtracting player 2s values from player 1 and not the other way around?"
 		else:
-			info = "The difference in street ownership is not that big, it should be less than 1 street on average."
+			info = "When starting both with 1500, the difference in street ownership is not that big, it should be somewhere between .35 and .55."
 		return assertlib.between(outcome, .35, .55), info
 
 	test.test = testMethod
