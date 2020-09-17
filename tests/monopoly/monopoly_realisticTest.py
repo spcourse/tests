@@ -60,7 +60,7 @@ def hassimulate_monopoly_games(test):
 @t.test(10)
 def correctAverageDiff(test):
 	def testMethod():
-		outcome = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1500, 1500)
+		outcome = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 1500)
 		if assertlib.sameType(outcome, None):
 			info = "Make sure that the function simulate_monopoly_games only returns the difference in the number of streets owned"
 		elif assertlib.between(outcome, -99999999, 0):
