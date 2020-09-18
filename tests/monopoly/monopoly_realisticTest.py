@@ -53,7 +53,7 @@ def hassimulate_monopoly_games(test):
 	test.test = testMethod
 	test.fail = lambda info : "make sure that the simulate_monopoly_games function has three arguments, the number of games, the starting_money for player 1, and the starting_money for player 2"
 	test.description = lambda : "defines functie simulate_monopoly_games with the proper number of arguments"
-	test.timeout = lambda : 5
+	test.timeout = lambda : 90
 
 
 @t.passed(hassimulate_monopoly_games)
