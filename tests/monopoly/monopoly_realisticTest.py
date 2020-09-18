@@ -96,7 +96,7 @@ def correctAverageDiff2(test):
 		else:
 			info = "Properly rounded to the nearest value, but the value returned was incorrect."
 		integers_found = set(lib.getPositiveIntegersFromString(line))
-		return len(integers_found & set([100, 150])) > 0
+		return len(integers_found & set([100, 150])) > 0, info
 
 	test.test = testMethod
 	test.description = lambda : "Monopoly with two players finds the correct amount of extra starting money for player 2"
