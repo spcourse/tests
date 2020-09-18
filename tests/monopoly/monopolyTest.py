@@ -30,14 +30,14 @@ def hasthrow_two_dice(test):
 
 	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "throw_two_dice")
 	test.description = lambda : "defines the function throw_two_dice"
-	test.timeout = lambda : 60
+	test.timeout = lambda : 5
 
 @t.passed(hasthrow_two_dice)
 @t.test(10)
 def correctDice(test):
 	test.test = lambda : assertlib.between(lib.getFunction("throw_two_dice", _fileName)(), 2, 12)
 	test.description = lambda : "returns a correct value for a throw with two dice"
-	test.timeout = lambda : 120
+	test.timeout = lambda : 5
 
 @t.passed(correctDice)
 @t.test(20)
@@ -57,7 +57,7 @@ def hassimulate_monopolyAndsimulate_monopoly_games(test):
 
 	test.test = lambda : testMethod()
 	test.description = lambda : "defines the functions simulate_monopoly and simulate_monopoly_games"
-	test.timeout = lambda : 60
+	test.timeout = lambda : 5
 
 
 @t.passed(hassimulate_monopolyAndsimulate_monopoly_games)
@@ -71,13 +71,13 @@ def correctAverageTrump(test):
 		if nArguments == 1:
 			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000)
 			test.success = lambda info : "The code works without starting_money, you can now proceed with starting_money!"
-			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000), None):
+			if assertlib.sameType(testInput, None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		# starting money, 1 player
 		elif nArguments == 2:
 			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(1000, 1000000)
-			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1000000), None):
+			if assertlib.sameType(testInput, None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		# starting money 2 player
@@ -95,7 +95,7 @@ def correctAverageTrump(test):
 	test.test = lambda : assertlib.between(testMethod(), 145, 149)
 	test.test = lambda : testMethod()
 	test.description = lambda : "Monopoly works for Trumpmode"
-	test.timeout = lambda : 120
+	test.timeout = lambda : 60
 
 
 @t.passed(correctAverageTrump)
@@ -107,7 +107,7 @@ def correctAverageStartingMoney(test):
 
 		if nArguments == 2:
 			testInput = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500)
-			if assertlib.sameType(lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500), None):
+			if assertlib.sameType(testInput, None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 			return testInput
 		# elif nArguments == 3:
