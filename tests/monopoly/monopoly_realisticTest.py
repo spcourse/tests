@@ -13,10 +13,21 @@ from notAllowedCode import *
 
 
 def before():
-	import matplotlib.pyplot as plt
-	plt.switch_backend("Agg")
-	lib.neutralizeFunction(plt.pause)
-	lib.neutralizeFunction(plt.show)
+	try:
+		import matplotlib
+		matplotlib.use("Agg")
+		import matplotlib.pyplot as plt
+		plt.switch_backend("Agg")
+		lib.neutralizeFunction(plt.pause)
+		lib.neutralizeFunction(plt.show)
+	except ImportError:
+		pass
+
+	try:
+		import numpy
+		numpy.seterr('raise')
+	except ImportError:
+		pass
 
 def after():
 	import matplotlib.pyplot as plt
@@ -55,8 +66,8 @@ def correctAverageDiff(test):
 		elif assertlib.between(outcome, -99999999, 0):
 			info = "Are you sure you are subtracting player 2s values from player 1 and not the other way around?"
 		else:
-			info = "The difference in street ownership is not that big, it should be less than 1 street on average."
-		return assertlib.between(outcome, .35, .55), info
+			info = "When starting both with 1500, the difference in street ownership is not that big, it should be somewhere between .15 and .55."
+		return assertlib.between(outcome, .15, .55), info
 
 	test.test = testMethod
 	test.description = lambda : "Monopoly with two players gives the correct average difference in owned streets"
@@ -84,7 +95,8 @@ def correctAverageDiff2(test):
 			info = "The found value was not rounded to the nearest value of 50 euros."
 		else:
 			info = "Properly rounded to the nearest value, but the value returned was incorrect."
-		return assertlib.numberOnLine(150, line), info
+		integers_found = set(lib.getPositiveIntegersFromString(line))
+		return len(integers_found & set([100, 150])) > 0
 
 	test.test = testMethod
 	test.description = lambda : "Monopoly with two players finds the correct amount of extra starting money for player 2"

@@ -74,7 +74,7 @@ def Correctreformatting(test):
             if reformatted_test_text == "":
                 reformatted_test_text = word
                 counter += len(word)
-            if len(word) + counter < max_length:
+            elif len(word) + counter < max_length:
                 reformatted_test_text += " " + word
                 counter += len(word) + 1
             else:
