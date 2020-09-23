@@ -51,7 +51,7 @@ def hasthrow_two_dice(test):
 def correctDice(test):
 	test.test = lambda : assertlib.between(lib.getFunction("throw_two_dice", _fileName)(), 2, 12)
 	test.description = lambda : "returns a correct value for a throw with two dice"
-	test.timeout = lambda : 60
+	test.timeout = lambda : 200
 
 
 @t.passed(correctDice)
