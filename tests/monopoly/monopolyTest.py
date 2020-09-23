@@ -83,14 +83,14 @@ def correctAverageTrump(test):
 
 		# Trump
 		if nArguments == 1:
-			testInput = student_func(1000)
+			testInput = student_func(10000)
 			test.success = lambda info : "The code works without starting_money, you can now proceed with starting_money!"
 			if assertlib.sameType(testInput, None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
 		# starting money, 1 player
 		elif nArguments == 2:
-			testInput = student_func(1000, 1000000)
+			testInput = student_func(10000, 1000000)
 			if assertlib.sameType(testInput, None):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
