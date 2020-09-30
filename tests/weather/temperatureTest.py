@@ -143,7 +143,7 @@ def correctDateLongestFreezingp(test):
 		correctDay = assertlib.contains(line, '24')
 		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["februari", "february", "feb"]])
 		correctYear = assertlib.contains(line, '1947')
-		return correctDay and correctMonth and correctYear
+		return correctDay and correctMonth and correctYear, "Did you print the date on the same line as the longest period of frost?"
 
 	test.test = testMethod
 	test.description = lambda : "prints the last day of the longest freezing period"
