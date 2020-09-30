@@ -67,7 +67,7 @@ def correctDateHighestTemp(test):
 		line = helpers.findLineWith(output, "36.8")
 
 		correctDay = assertlib.contains(line, '27')
-		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["6", "juni", "june", "jun"]])
+		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["juni", "june", "jun"]])
 		correctYear = assertlib.contains(line, '1947')
 		return correctDay and correctMonth and correctYear
 
@@ -104,7 +104,7 @@ def correctDateLowestTemp(test):
 		line = helpers.findLineWith(output, "-24.8")
 
 		correctDay = assertlib.contains(line, '27')
-		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["1", "januari", "january", "jan"]])
+		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["januari", "january", "jan"]])
 		correctYear = assertlib.contains(line, '1942')
 		return correctDay and correctMonth and correctYear
 
@@ -125,7 +125,7 @@ def correctLongestFreezing(test):
 		return assertlib.contains(output, correctAnswer)
 
 	test.test = testMethod
-	test.description = lambda : "print de langste periode dat het aaneengesloten heeft gevroren"
+	test.description = lambda : "prints the longest period of frost (in days)"
 
 @t.passed(correctLongestFreezing)
 @t.test(31)
@@ -141,7 +141,7 @@ def correctDateLongestFreezingp(test):
 		line = helpers.findLineWith(output, "21")
 
 		correctDay = assertlib.contains(line, '24')
-		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["2", "februari", "february", "feb"]])
+		correctMonth = any([assertlib.contains(line.lower(), month) for month in ["februari", "february", "feb"]])
 		correctYear = assertlib.contains(line, '1947')
 		return correctDay and correctMonth and correctYear
 
