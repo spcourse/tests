@@ -36,12 +36,14 @@ def Correctwithspaces(test):
         if "  " in outputtext:
             info = "Make sure there are no double spaces in the reformatted text."
             return False, info
-        if " \n" in outputtext or "\n " in outputtext:
+        if " \n" in outputtext:
             info = "Make sure lines don't start with a white space."
+            return False, info
+        elif "\n " in outputtext:
+            info = "Make sure lines don't end with a white space (after the enter)."
             return False, info
 
         return True
-
 
     test.test = testMethod
     test.description = lambda : "Reformatted text has no unexpected white spaces."
