@@ -29,4 +29,4 @@ def exact1000(test):
 @t.test(30)
 def handlesWrongInput(test):
 	test.test = lambda : assertlib.numberOnLine(2, lib.getLine(lib.outputOf(_fileName, stdinArgs=[-90, -1, 0, 1]), 0))
-	test.description = lambda : "rejects negative input"
+	test.description = lambda : "rejects negative input and rejects input of zero"
