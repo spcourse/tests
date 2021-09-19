@@ -1,3 +1,5 @@
+from collections.abc import Iterable
+
 class InvalidFunctionApplication(Exception):
     def __init__(self, message):
         self.message = message
@@ -19,7 +21,6 @@ def apply_function(fn, input, output_descr, check_none=True):
         if type(_output) != output_descr[0]:
             raise InvalidFunctionApplication(f"Make sure the function {fname} returns a value of type {output_descr[0].__name__}.")
     else:
-        print(type(_output) != tuple)
         if (type(_output) != tuple) or len(_output) != number_of_return_values:
             raise InvalidFunctionApplication(f"Make sure to return exactly {number_of_return_values} values.")
         for i, (expected_type, actual_value) in enumerate(zip(output_descr, _output)):
@@ -29,3 +30,23 @@ def apply_function(fn, input, output_descr, check_none=True):
                 raise InvalidFunctionApplication(f"Make sure the {ORDINALS[i]} return value is of type {expected_type.__name__}")
 
     return _output
+
+def similar(v1, v2, atol):
+    upper, lower =  (v2 + atol), (v2 - atol)
+    return v1 < upper and v1 >= lower
+
+# def similar_values(output, expected, atol=0):
+#     if isinstance(output, Iterable) != isinstance(expected, Iterable):
+#         return False
+#     if isinstance(output, Iterable) and isinstance(expected, Iterable):
+#         if len(output) != len(expected):
+#             return False
+#         if isinstance(atol, Iterable):
+#             rest = max(0, len(output) - len(atol))
+#         else:
+#             rest = len(atol)
+#         atols = atol + [0] * rest
+#         for o, e, tol in zip(output, expected, atols):
+#             if not similar(o, e, tol):
+#                 return False
+#     return True

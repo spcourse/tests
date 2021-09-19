@@ -10,7 +10,7 @@ parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os
 sys.path.append(parpath)
 
 from notAllowedCode import *
-from helpers import apply_function, InvalidFunctionApplication
+from helpers import apply_function, InvalidFunctionApplication, similar
 
 def before():
 	try:
@@ -45,7 +45,7 @@ def containsRequiredFunction1Definition(test):
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
 	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_apple1")
-	test.description = lambda : "defines the function `simulate_apple1()`"
+	test.description = lambda : "Defines the function `simulate_apple1()`"
 
 
 
@@ -64,11 +64,12 @@ def testApple1(test):
 			return False, e.message
 		except Exception as e:
 			return False, f"An error occured while running the function: \n {type(e).__name__}: {str(e)}"
-		if assertlib.between(_v, 4.5, 4.54) or assertlib.between(_t, 159, 160):
+
+		if similar(_v, 4.52, atol = 0.1) or similar(_t, 159.47, atol = 1):
 			return False, "Did you mix up the order of the return values?"
-		if assertlib.between(_v, 44, 45):
+		if similar(_v, 44.3, atol = 0.3):
 			return False, "Did you forget to convert to km/h?"
-		if assertlib.between(_t, 4.5, 4.54) and assertlib.between(_v, 159, 160):
+		if similar(_t, 4.52, atol = 0.1) and similar(_v, 159.47, atol = 1):
 			return True, ""
 		return False, f"Did not expect output {_t, _v} (with input {_input})"
 
@@ -83,7 +84,7 @@ def containsRequiredFunction2Definition(test):
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
 	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_apple2")
-	test.description = lambda : "defines the function `simulate_apple2()`"
+	test.description = lambda : "Defines the function `simulate_apple2()`"
 
 @t.passed(containsRequiredFunction2Definition)
 @t.test(3)
