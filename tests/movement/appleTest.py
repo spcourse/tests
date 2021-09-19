@@ -10,6 +10,7 @@ parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os
 sys.path.append(parpath)
 
 from notAllowedCode import *
+from helpers import apply_function, InvalidFunctionApplication
 
 def before():
 	try:
@@ -38,28 +39,65 @@ def after():
 
 
 @t.test(0)
-def containsRequiredFunctionDefinitions(test):
+def containsRequiredFunction1Definition(test):
 
 	notAllowed = {"break": "break"}
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
 
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "apple")
-	test.description = lambda : "defines the function `appel()`"
+	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_apple1")
+	test.description = lambda : "defines the function `simulate_apple1()`"
 
-@t.passed(containsRequiredFunctionDefinitions)
+
+
+
+
+
+@t.passed(containsRequiredFunction1Definition)
 @t.test(1)
-def correctTime(test):
-	test.test = lambda : assertlib.numberOnLine(4.51, lib.getLine(lib.outputOf(_fileName), 0), deviation = 0.01)
-	test.description = lambda : "prints the number of seconds after which the apple touches the ground"
+def testApple1(test):
+	def testMethod():
+		try:
+			_input = 100, 0.01
+			_fn = lib.getFunction("simulate_apple1", _fileName)
+			_t, _v = apply_function(_fn, _input, (float, float))
+		except InvalidFunctionApplication as e:
+			return False, e.message
+		except Exception as e:
+			return False, f"An error occured while running the function: \n {type(e).__name__}: {str(e)}"
+		if assertlib.between(_v, 4.5, 4.54) or assertlib.between(_t, 159, 160):
+			return False, "Did you mix up the order of the return values?"
+		if assertlib.between(_v, 44, 45):
+			return False, "Did you forget to convert to km/h?"
+		if assertlib.between(_t, 4.5, 4.54) and assertlib.between(_v, 159, 160):
+			return True, ""
+		return False, f"Did not expect output {_t, _v} (with input {_input})"
 
-@t.passed(containsRequiredFunctionDefinitions)
+	test.test = testMethod
+	test.description = lambda : "Testing simulate_apple1()"
+	test.timeout = lambda : 90
+
 @t.test(2)
-def correctSpeed(test):
-	test.test = lambda : assertlib.numberOnLine(159.5, lib.getLine(lib.outputOf(_fileName), 1), deviation = 0.1)
-	test.description = lambda : "prints the speed with which the apple touches the ground"
+def containsRequiredFunction2Definition(test):
 
-@t.passed(containsRequiredFunctionDefinitions)
+	notAllowed = {"break": "break"}
+	notAllowedCode(test, lib.source(_fileName), notAllowed)
+
+	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_apple2")
+	test.description = lambda : "defines the function `simulate_apple2()`"
+
+@t.passed(containsRequiredFunction2Definition)
 @t.test(3)
-def correctSecondsToHit100(test):
-	test.test = lambda : assertlib.numberOnLine(2.83, lib.getLine(lib.outputOf(_fileName), 2), deviation = 0.01)
-	test.description = lambda : "prints the number of seconds after which the speed reaches 100 km/h"
+def testApple2(test):
+	def testMethod2():
+		_fn = lib.getFunction("simulate_apple2", _fileName)
+		try:
+			_t = apply_function(_fn, (0.01,), (float,))
+		except InvalidFunctionApplication as e:
+			return False, e.message
+		if assertlib.between(_t, 2.82, 2.86):
+			return True, ""
+		return False, f"Did not expect output {_t} (with input: 0.01)"
+
+	test.test = testMethod2
+	test.description = lambda : "Testing simulate_apple2()"
+	test.timeout = lambda : 90
