@@ -44,7 +44,7 @@ def returnTypeIsList(test):
 @t.test(20)
 def correct(test):
 	test.test = lambda : assertlib.exact(sorted(int(p * 10) for p in lib.getFunction("roots", _fileName)(1,2,-10)), [-43, 23])
-	test.description = lambda : "roots() yields two roots for a=1, b=2, c=-10"
+	test.description = lambda : "roots() yields the two correct roots for a=1, b=2, c=-10"
 
 @t.passed(hasNulpunten)
 @t.test(30)
