@@ -10,7 +10,7 @@ parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os
 sys.path.append(parpath)
 
 from notAllowedCode import *
-from helpers import apply_function, InvalidFunctionApplication, similar
+from helpers import apply_function, InvalidFunctionApplication, similar, has_function
 
 def before():
 	try:
@@ -43,9 +43,7 @@ def containsRequiredFunctionDefinitions(test):
 
 	notAllowed = {"break": "break"}
 	notAllowedCode(test, lib.source(_fileName), notAllowed)
-
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_ultimate_free_fall")
-	test.description = lambda : "Defines the function `simulate_ultimate_free_fall()`"
+	has_function(test, _fileName, "simulate_ultimate_free_fall", ['r_start', 'dt'])
 
 
 def validate_sim1(input_params, expected, rl, vl):
