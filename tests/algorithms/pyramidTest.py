@@ -63,8 +63,7 @@ def handlesWrongInput(test):
 	
 	def test_code():
 		notAllowedCode(test, lib.source(_fileName), notAllowed)
-		return assertlib.match(lib.outputOf(_fileName, stdinArgs=[-100, 24, 1])
+		return lib.outputOf(_fileName, stdinArgs=[-100, 24, 1])
 
-	test.test = test_code,
-	re.compile(".*(# #)[ ]*(\n)"))
+	test.test = lambda : assertlib.match(test_code, re.compile(".*(# #)[ ]*(\n)"))
 	test.description = lambda : "rejects heights of -100 and 24, then accepts a height of 1"
