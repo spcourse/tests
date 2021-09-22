@@ -60,8 +60,11 @@ def exactMario23(test):
 @t.test(10)
 def handlesWrongInput(test):
 	notAllowed = {"the * operator, but instead loops": "*"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
+	
+	def test_code():
+		notAllowedCode(test, lib.source(_fileName), notAllowed)
+		return assertlib.match(lib.outputOf(_fileName, stdinArgs=[-100, 24, 1])
 
-	test.test = lambda : assertlib.match(lib.outputOf(_fileName, stdinArgs=[-100, 24, 1]),
+	test.test = test_code,
 	re.compile(".*(# #)[ ]*(\n)"))
 	test.description = lambda : "rejects heights of -100 and 24, then accepts a height of 1"
