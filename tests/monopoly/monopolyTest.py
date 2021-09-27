@@ -104,7 +104,7 @@ def correctAverageTrump(test):
 	test.description = lambda : "Monopoly works for Trumpmode"
 	test.timeout = lambda : 60
 
-
+@t.passed(hassimulate_monopolyAndsimulate_monopoly_games)
 @t.test(40)
 def correctAverageStartingMoney(test):
 
