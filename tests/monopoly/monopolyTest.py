@@ -104,8 +104,7 @@ def correctAverageTrump(test):
 	test.description = lambda : "Monopoly works for Trumpmode"
 	test.timeout = lambda : 60
 
-
-@t.passed(correctAverageTrump)
+@t.passed(hassimulate_monopolyAndsimulate_monopoly_games)
 @t.test(40)
 def correctAverageStartingMoney(test):
 
@@ -119,6 +118,7 @@ def correctAverageStartingMoney(test):
 				test.fail = lambda info : "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 			return testInput
 		else:
+			test.fail = lambda info : "Did you implement starting money yet? If not, ignore this frowny."
 			return 0
 
 	test.test = lambda : assertlib.between(testMethod(), 184, 189)
