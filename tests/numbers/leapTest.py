@@ -75,7 +75,7 @@ def leapYears100(test):
 
 	test.test = testMethod
 
-	test.description = lambda : "Leap years between 1890 and 1920"
+	test.description = lambda : "Leap years between 1890 and 1920; every 100th year is not a leap year"
 	test.timeout = lambda : 90
 
 @t.test(5)
@@ -88,5 +88,5 @@ def leapYears400(test):
 
 	test.test = testMethod
 
-	test.description = lambda : "Leap years between 1990 and 2020"
+	test.description = lambda : "Leap years between 1990 and 2020; every 400th year is a leap year"
 	test.timeout = lambda : 90
