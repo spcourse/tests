@@ -11,6 +11,7 @@ def sandbox():
 	lib.require("neg_words.txt", "https://github.com/spcourse/text/raw/main/en/sentiment/neg_words.txt")
 
 
+
 @t.test(0)
 def Correctfor_pos(test):
     test_text = "Coronet has the best lines of all day cruisers."
