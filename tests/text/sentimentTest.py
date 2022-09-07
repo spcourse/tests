@@ -7,8 +7,8 @@ import importlib
 # arguments and right type of return, but only gives a mesage at test 0.
 
 def sandbox():
-	lib.require("pos_words.txt", "https://sp1.proglab.nl/materials/text/en/sentiment/pos_words.txt")
-	lib.require("neg_words.txt", "https://sp1.proglab.nl/materials/text/en/sentiment/neg_words.txt")
+	lib.require("pos_words.txt", "https://github.com/spcourse/text/raw/main/en/sentiment/pos_words.txt")
+	lib.require("neg_words.txt", "https://github.com/spcourse/text/raw/main/en/sentiment/neg_words.txt")
 
 
 @t.test(0)
