@@ -8,7 +8,7 @@ def before():
 	try:
 		import matplotlib
 		import warnings
-		warnings.filterwarnings("ignore", module = "plot")
+		warnings.filterwarnings("ignore")
 		matplotlib.use("Agg")
 		import matplotlib.pyplot as plt
 		plt.switch_backend("Agg")
