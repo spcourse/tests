@@ -15,6 +15,8 @@ from notAllowedCode import *
 def before():
 	try:
 		import matplotlib
+		import warnings
+		warnings.filterwarnings("ignore", module = "plot")
 		matplotlib.use("Agg")
 		import matplotlib.pyplot as plt
 		plt.switch_backend("Agg")
@@ -28,6 +30,7 @@ def before():
 		numpy.seterr('raise')
 	except ImportError:
 		pass
+
 
 def after():
 	import matplotlib.pyplot as plt

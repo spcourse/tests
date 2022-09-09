@@ -15,10 +15,13 @@ from helpers import apply_function, InvalidFunctionApplication, similar, has_fun
 def before():
 	try:
 		import matplotlib
+		import warnings
+		warnings.filterwarnings("ignore", module = "plot")
 		matplotlib.use("Agg")
 		import matplotlib.pyplot as plt
 		plt.switch_backend("Agg")
 		lib.neutralizeFunction(plt.pause)
+		lib.neutralizeFunction(plt.show)
 	except ImportError:
 		pass
 

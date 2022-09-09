@@ -1,16 +1,18 @@
 import checkpy.tests as t
 import checkpy.lib as lib
 import checkpy.assertlib as assertlib
-import math
 import importlib
 
 def before():
 	try:
 		import matplotlib
+		import warnings
+		warnings.filterwarnings("ignore", module = "plot")
 		matplotlib.use("Agg")
 		import matplotlib.pyplot as plt
 		plt.switch_backend("Agg")
 		lib.neutralizeFunction(plt.pause)
+		lib.neutralizeFunction(plt.show)
 	except ImportError:
 		pass
 
