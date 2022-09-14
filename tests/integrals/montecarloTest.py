@@ -7,18 +7,22 @@ import importlib
 def before():
 	try:
 		import matplotlib
+		import warnings
+		warnings.filterwarnings("ignore")
 		matplotlib.use("Agg")
 		import matplotlib.pyplot as plt
 		plt.switch_backend("Agg")
 		lib.neutralizeFunction(plt.pause)
+		lib.neutralizeFunction(plt.show)
 	except ImportError:
 		pass
-	
+
 	try:
 		import numpy
 		numpy.seterr('raise')
 	except ImportError:
 		pass
+
 
 def after():
 	try:
