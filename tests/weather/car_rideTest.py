@@ -4,7 +4,7 @@ import checkpy.assertlib as assertlib
 import importlib
 
 def sandbox():
-	lib.require("CarRideData.csv", "https://sp1.proglab.nl/materials/bigdata/data/en/CarRideData.csv")
+	lib.require("CarRideData.csv", "https://raw.githubusercontent.com/spcourse/bigdata/main/data/en/CarRideData.csv")
 
 def before():
 	try:
