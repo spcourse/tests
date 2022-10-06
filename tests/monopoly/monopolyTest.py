@@ -105,7 +105,7 @@ def correctAverageTrump(test):
 
 	test.test = lambda : assertlib.between(testMethod(), 145, 149)
 	test.description = lambda : "Monopoly works for Trumpmode"
-	test.timeout = lambda : 60
+	test.timeout = lambda : 120
 
 @t.passed(hassimulate_monopolyAndsimulate_monopoly_games)
 @t.test(40)
