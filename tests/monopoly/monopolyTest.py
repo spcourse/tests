@@ -126,4 +126,4 @@ def correctAverageStartingMoney(test):
 
 	test.test = lambda : assertlib.between(testMethod(), 184, 189)
 	test.description = lambda : "Monopoly works with 1500 euro starting_money"
-	test.timeout = lambda : 60
+	test.timeout = lambda : 120
