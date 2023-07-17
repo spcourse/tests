@@ -1,69 +1,57 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import re
+from checkpy import *
 
-import os
+import pathlib
+import re
 import sys
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
-
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from notAllowedCode import *
 
-@t.test(0)
-def exactMario0(test):
-	test.test = lambda : assertlib.match(lib.outputOf(_fileName, stdinArgs=[1]),
-		re.compile(".*(# #)[ ]*(\n)"))
-	test.description = lambda : "prints a well-formed pyramid of height 1"
 
-@t.test(1)
-def exactMario3(test):
-	test.test = lambda : assertlib.match(lib.outputOf(_fileName, stdinArgs=[3]), 
-		re.compile(".*"
-			"(    # #)[ ]*(\n)"
-			"(  # # #)[ ]*(\n)"
-			"(# # # #)[ ]*"
-			".*", re.MULTILINE))
-	test.description = lambda : "prints a well-formed pyramid of height 3"
+@test()
+def exactMario1():
+	"""prints a well-formed pyramid of height 1"""
+	pyramid, regex = getPyramid(1)
+	if regex.match(outputOf(stdinArgs=[1])) is None:
+		assert outputOf(stdinArgs=[1]) == pyramid
 
-@t.test(2)
-def exactMario23(test):
-	test.test = lambda : assertlib.match(lib.outputOf(_fileName, stdinArgs=[23]),
-		re.compile(".*"
-			"(                                            # #)[ ]*(\n)"
-			"(                                          # # #)[ ]*(\n)"
-			"(                                        # # # #)[ ]*(\n)"
-			"(                                      # # # # #)[ ]*(\n)"
-			"(                                    # # # # # #)[ ]*(\n)"
-			"(                                  # # # # # # #)[ ]*(\n)"
-			"(                                # # # # # # # #)[ ]*(\n)"
-			"(                              # # # # # # # # #)[ ]*(\n)"
-			"(                            # # # # # # # # # #)[ ]*(\n)"
-			"(                          # # # # # # # # # # #)[ ]*(\n)"
-			"(                        # # # # # # # # # # # #)[ ]*(\n)"
-			"(                      # # # # # # # # # # # # #)[ ]*(\n)"
-			"(                    # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(                  # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(                # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(              # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(            # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(          # # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(        # # # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(      # # # # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(    # # # # # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(  # # # # # # # # # # # # # # # # # # # # # # #)[ ]*(\n)"
-			"(# # # # # # # # # # # # # # # # # # # # # # # #)[ ]*"
-			".*", re.MULTILINE))
-	test.description = lambda : "prints a well-formed pyramid of height 23"
 
-@t.test(10)
-def handlesWrongInput(test):
-	notAllowed = {"the * operator, but instead loops": "*"}
-	
-	def test_code():
-		notAllowedCode(test, lib.source(_fileName), notAllowed)
-		return lib.outputOf(_fileName, stdinArgs=[-100, 24, 1])
+@passed(exactMario1, hide=False)
+def exactMario3():
+	"""prints a well-formed pyramid of height 3"""
+	pyramid, regex = getPyramid(3)
+	if regex.match(outputOf(stdinArgs=[3])) is None:
+		assert outputOf(stdinArgs=[3]) == pyramid
 
-	test.test = lambda : assertlib.match(test_code(), re.compile(".*(# #)[ ]*(\n)"))
-	test.description = lambda : "rejects heights of -100 and 24, then accepts a height of 1"
+
+@passed(exactMario3, hide=False)
+def exactMario23():
+	""""prints a well-formed pyramid of height 23"""
+	pyramid, regex = getPyramid(23)
+	if regex.match(outputOf(stdinArgs=[23])) is None:
+		assert outputOf(stdinArgs=[23]) == pyramid
+
+
+@passed(exactMario3, hide=False)
+def handlesWrongInput():
+	""""rejects heights of -100 and 24, then accepts a height of 3"""
+	notAllowedCode({
+		"the * operator, but instead loops": "*"
+	})
+	output = outputOf(stdinArgs=[-100, 24, 3])
+	pyramid, regex = getPyramid(3)
+	if regex.match(output) is None:
+		assert output == pyramid
+
+
+def getLine(i, height):
+	return (height - i - 1) * "  " + " ".join("#" for i in range(i + 2))
+
+
+def getPyramid(height):
+	pyramid = [getLine(i, height) for i in range(height)]
+	regex = ".*"
+	for line in pyramid:
+		regex += f"({line})[ ]*(\n)"
+	regex += ".*"
+	return "\n".join(pyramid), re.compile(regex, re.MULTILINE)

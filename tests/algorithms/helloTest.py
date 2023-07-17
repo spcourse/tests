@@ -1,14 +1,13 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
+from checkpy import *
 
-@t.test(0)
-def exactHello(test):
-	test.test = lambda : assertlib.exact(lib.outputOf(_fileName), "Hello, world!\n")
-	test.description = lambda : "prints \"Hello, world!\""
+only("hello.py")
 
-@t.failed(exactHello)
-@t.test(1)
-def oneLine(test):
-	test.test = lambda : assertlib.exact(len(lib.outputOf(_fileName).split("\n")), 2) and assertlib.exact(lib.getLine(lib.outputOf(_fileName), 1), "")
-	test.description = lambda : "prints exactly 1 line of output"
+@test()
+def exactHello():
+	"""prints \"Hello, world!\""""
+	assert outputOf() == "Hello, world!\n"
+
+@failed(exactHello)
+def oneLine():
+	"""prints exactly 1 line of output"""
+	assert outputOf().count("\n") == 1

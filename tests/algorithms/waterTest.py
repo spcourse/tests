@@ -1,18 +1,16 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
+from checkpy import *
 
-@t.test(0)
-def exactWater0(test):
-	test.test = lambda : assertlib.numberOnLine(0, lib.getLine(lib.outputOf(_fileName, stdinArgs=[0]), 0))
-	test.description = lambda : "0 minutes in the shower is 0 bottles of water"
+@test()
+def exactWater0():
+	"""0 minutes in the shower is 0 bottles of water"""
+	assert "0\n" == outputOf(stdinArgs=[0])
 
-@t.test(1)
-def exactWater10(test):
-	test.test = lambda : assertlib.numberOnLine(120, lib.getLine(lib.outputOf(_fileName, stdinArgs=[10]), 0))
-	test.description = lambda : "10 minutes in the shower is 120 bottles of water"
+@test()
+def exactWater10():
+	"""10 minutes in the shower is 120 bottles of water"""
+	assert "120\n" == outputOf(stdinArgs=[10])
 
-@t.test(2)
-def exactWater327(test):
-	test.test = lambda : assertlib.numberOnLine(3924, lib.getLine(lib.outputOf(_fileName, stdinArgs=[327]), 0))
-	test.description = lambda : "327 minutes in the shower is 3924 bottles of water"
+@test()
+def exactWater327():
+	"""327 minutes in the shower is 3924 bottles of water"""
+	assert "3924\n" == outputOf(stdinArgs=[327])
