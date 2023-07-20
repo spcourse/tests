@@ -1,6 +1,3 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
 import math
 
 from checkpy import *
