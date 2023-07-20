@@ -2,56 +2,41 @@ import checkpy.tests as t
 import checkpy.lib as lib
 import checkpy.assertlib as assertlib
 import math
-import importlib
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
+from checkpy import *
 
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+only("montecarlo.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
+@test()
+def hasMontecarlo():
+	"""defines the function montecarlo()"""
+	assert "montecarlo" in static.getFunctionDefinitions()
 
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
+@passed(hasMontecarlo, hide=False)
+def correctFunc1():
+	"""montecarlo() yields the correct value of an integral on [0,1] for the square function"""
+	square = monkeypatch.documentFunction(
+		lambda x: x**(x + 0.5),
+		"lambda x: x**(x + 0.5)"
+	)
+	assert getFunction("montecarlo")(square, 0, 0, 1, 1) == approx(0.525, abs=0.015)
 
+@passed(correctFunc1, hide=False)
+def correctFunc2():
+	"""montecarlo() yields the correct value when an interval does not start at x=0"""
+	tanCosSin = monkeypatch.documentFunction(
+		lambda x: math.tan(math.cos(math.sin(x))),
+		"lambda x: tan(cos(sin(x)))"
+	)
+	assert getFunction("montecarlo")(tanCosSin, 0.2, 0, 2.2, 1.5) == approx(1.71, abs=0.02)
 
-@t.test(0)
-def hasMontecarlo(test):
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "montecarlo")
-	test.description = lambda : "defines the function montecarlo()"
-
-@t.passed(hasMontecarlo)
-@t.test(1)
-def correctFunc1(test):
-	test.test = lambda : assertlib.between(lib.getFunction("montecarlo", _fileName)(lambda x : x**(x + 0.5), 0, 0, 1, 1), 0.51, 0.54)
-	test.description = lambda : "montecarlo() yields the correct value of an integral on [0,1] for the square function"
-
-@t.passed(hasMontecarlo)
-@t.test(2)
-def correctFunc2(test):
-	test.test = lambda : assertlib.between(lib.getFunction("montecarlo", _fileName)(lambda x : math.tan(math.cos(math.sin(x))), 0.2, 0, 2.2, 1.5), 1.69, 1.73)
-	test.description = lambda : "montecarlo() yields the correct value when an interval does not start at x=0"
-
-@t.passed(hasMontecarlo)
-@t.test(3)
-def correctFunc3(test):
-	test.test = lambda : assertlib.between(lib.getFunction("montecarlo", _fileName)(lambda x : math.sin(x**2), 0, -1, math.pi, 1), 0.75, 0.79)
-	test.description = lambda : "montecarlo() yields the correct value when a function goes below the x-axis"
+@passed(correctFunc1, hide=False)
+def correctFunc3():
+	"""montecarlo() yields the correct value when a function goes below the x-axis"""
+	squaredSin = monkeypatch.documentFunction(
+		lambda x : math.sin(x**2),
+		"lambda x: sin(x**2)"
+	)
+	assert getFunction("montecarlo")(squaredSin, 0, -1, math.pi, 1) == approx(0.77, abs=0.02)

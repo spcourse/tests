@@ -12,4 +12,4 @@ def hasVierkant():
 @passed(hasVierkant, hide=False)
 def correctVierkant():
 	"""square() yields the correct distance"""
-	assert 0.51 <= getFunction("square")(10000) <= 0.54
+	assert getFunction("square")(10000) == approx(0.525, abs=0.015)
