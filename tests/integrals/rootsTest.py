@@ -1,55 +1,25 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import importlib
+from checkpy import *
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
+only("roots.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+@test()
+def hasNulpunten():
+    """defines the function roots()"""
+    assert "roots" in static.getFunctionDefinitions()
 
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
+@passed(hasNulpunten, hide=False)
+def returnTypeIsList():
+    """roots() returns a list"""
+    assert type(getFunction("roots")(1, 2, -10)) is list
 
+@passed(returnTypeIsList, hide=False)
+def correct():
+    """roots() yields the two correct roots for a=1, b=2, c=-10"""
+    assert sorted(int(p * 10) / 10 for p in getFunction("roots")(1, 2, -10)) == [-4.3, 2.3]
 
-@t.test(0)
-def hasNulpunten(test):
-    test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "roots")
-    test.description = lambda : "defines the function roots()"
-
-@t.passed(hasNulpunten)
-@t.test(10)
-def returnTypeIsList(test):
-    test.test = lambda : assertlib.sameType(lib.getFunction("roots", _fileName)(1,2,-10), [])
-    test.description = lambda : "roots() returns a list"
-
-@t.passed(hasNulpunten)
-@t.test(20)
-def correct(test):
-	test.test = lambda : assertlib.exact(sorted(int(p * 10) for p in lib.getFunction("roots", _fileName)(1,2,-10)), [-43, 23])
-	test.description = lambda : "roots() yields the two correct roots for a=1, b=2, c=-10"
-
-@t.passed(hasNulpunten)
-@t.test(30)
-def correctNone(test):
-    test.test = lambda : assertlib.exact(sorted(int(p * 10) for p in lib.getFunction("roots", _fileName)(3,6,9)), [])
-    test.description = lambda : "roots() yields no roots for a=3, b=6, c=9"
+@passed(returnTypeIsList, hide=False)
+def correctNone():
+    """roots() yields no roots for a=3, b=6, c=9"""
+    assert getFunction("roots")(3, 6, 9) == []
