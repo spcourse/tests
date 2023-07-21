@@ -45,7 +45,8 @@ def correctAverageTrump(test):
 	simulate_monopoly_games = getFunction("simulate_monopoly_games")
 	nArguments = len(simulate_monopoly_games.arguments)
 
-	assert nArguments in [1, 2], "Make sure that the function simulate_monopoly_games with Trumpmode accepts 1 argument and with starting_money 2 arguments"
+	assert nArguments in [1, 2],\
+		"Make sure that the function simulate_monopoly_games with Trumpmode accepts 1 argument and with starting_money 2 arguments"
 
 	# Trump
 	if nArguments == 1:
@@ -55,7 +56,8 @@ def correctAverageTrump(test):
 	else:
 		result = simulate_monopoly_games(10000, 1000000)
 
-	assert result is not None, "Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+	assert result is not None,\
+		"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 	assert result == approx(147, abs=2)
 
 
