@@ -1,106 +1,64 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import importlib
-
-import os
+import pathlib
 import sys
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
+from checkpy import *
 
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from notAllowedCode import *
 
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
-
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+only("monopoly_realistic.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
 
-def after():
-	import matplotlib.pyplot as plt
-	plt.switch_backend("TkAgg")
-	importlib.reload(plt)
+@test(timeout=90)
+def hassimulate_monopoly_games():
+	"""defines simulate_monopoly_games with the correct number of parameters"""
+	notAllowedCode({"break": "break"})
 
-@t.test(0)
-def hassimulate_monopoly_games(test):
+	assert "simulate_monopoly_games" in static.getFunctionDefinitions()
 
-	def testMethod():
-		correctFunction = False
-
-		if assertlib.fileContainsFunctionDefinitions(_fileName, "simulate_monopoly_games"):
-			nArguments = len(lib.getFunction("simulate_monopoly_games", _fileName).arguments)
-
-			if nArguments == 3:
-				correctFunction = True
-		return correctFunction
-
-	notAllowed = {"break": "break"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
-
-	test.test = testMethod
-	test.fail = lambda info : "make sure that the simulate_monopoly_games function has three arguments, the number of games, the starting_money for player 1, and the starting_money for player 2"
-	test.description = lambda : "defines functie simulate_monopoly_games with the proper number of arguments"
-	test.timeout = lambda : 90
+	assert len(getFunction("simulate_monopoly_games").parameters) == 3,\
+		"make sure that the simulate_monopoly_games function has three parameters"\
+		", the number of games, the starting_money for player 1,"\
+		" and the starting_money for player 2"
 
 
-@t.passed(hassimulate_monopoly_games)
-@t.test(10)
-def correctAverageDiff(test):
-	def testMethod():
-		outcome = lib.getFunction("simulate_monopoly_games", _fileName)(10000, 1500, 1500)
-		if assertlib.sameType(outcome, None):
-			info = "Make sure that the function simulate_monopoly_games only returns the difference in the number of streets owned"
-		elif assertlib.between(outcome, -99999999, 0):
-			info = "Are you sure you are subtracting player 2s values from player 1 and not the other way around?"
-		else:
-			info = "When starting both with 1500, the difference in street ownership is not that big, it should be somewhere between .15 and .55."
-		return assertlib.between(outcome, .15, .55), info
+@passed(hassimulate_monopoly_games, timeout=90, hide=False)
+def correctAverageDiff():
+	"""Monopoly with two players gives the correct average difference in owned streets"""
+	outcome = getFunction("simulate_monopoly_games")(10000, 1500, 1500)
 
-	test.test = testMethod
-	test.description = lambda : "Monopoly with two players gives the correct average difference in owned streets"
-	test.timeout = lambda : 90
+	assert Type(float) == outcome,\
+		"Make sure that the function simulate_monopoly_games only returns the difference in the number of streets owned"
+
+	assert outcome > 0,\
+		"Are you sure you are subtracting player 2s values from player 1"\
+		" and not the other way around?"
+
+	assert outcome == approx(.35, abs=0.2)
 
 
+@passed(correctAverageDiff, timeout=90, hide=False)
+def correctAverageDiff2():
+	"""Monopoly with two players finds the correct amount of extra starting money for player 2"""
+	def findline(text: str) -> str:
+		tsts = ['starting', 'money', 'equal', 'number', 'streets']
+		for line in text.split("\n"):
+			if all(tst in line for tst in tsts):
+				return line
+		return ""
 
-@t.passed(correctAverageDiff)
-@t.test(20)
-def correctAverageDiff2(test):
-	def testMethod():
-		def findline(outputOf):
-			tsts = ['starting', 'money', 'equal', 'number', 'streets']
-			for line in outputOf.split("\n"):
-				if all([assertlib.contains(line, tst) for tst in tsts]):
-					return line
-			return ""
+	line = findline(outputOf())
 
-		line = findline(lib.outputOf(_fileName))
+	if not line:
+		return False, "Check the assignment for the correct output format of the solution."
 
-		info = ""
-		if not line:
-			info = "Check the assignment for the proper output format of the solution."
-		elif not any([assertlib.numberOnLine(number, line) for number in [0, 50, 100, 150, 200]]):
-			info = "The found value was not rounded to the nearest value of 50 euros."
-		else:
-			info = "Properly rounded to the nearest value, but the value returned was incorrect."
-		integers_found = set(lib.getPositiveIntegersFromString(line))
-		return len(integers_found & set([100, 150])) > 0, info
+	numbers = static.getNumbersFrom(line)
 
-	test.test = testMethod
-	test.description = lambda : "Monopoly with two players finds the correct amount of extra starting money for player 2"
-	test.timeout = lambda : 90
+	assert 0 in numbers or 50 in numbers or 100 in numbers or 150 in numbers or 200 in numbers,\
+		"The found value was not rounded to the nearest value of 50 euros."
+
+	assert 100 in numbers or 150 in numbers,\
+		"Properly rounded to the nearest value, but the value returned was incorrect."
