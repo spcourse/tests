@@ -31,7 +31,8 @@ def correctAverageDiff():
 	outcome = getFunction("simulate_monopoly_games")(10000, 1500, 1500)
 
 	assert Type(float) == outcome,\
-		"Make sure that the function simulate_monopoly_games only returns the difference in the number of streets owned"
+		"Make sure that the function simulate_monopoly_games only returns"\
+		" the difference in the number of streets owned"
 
 	assert outcome > 0,\
 		"Are you sure you are subtracting player 2s values from player 1"\
