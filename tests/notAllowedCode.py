@@ -1,11 +1,11 @@
 from typing import Dict
 
 from checkpy.tester import getActiveTest
-from checkpy.lib import source, removeComments
+from checkpy.lib.static import getSource, removeComments
 
 
 def _notAllowedCode(notAllowed: Dict[str, str]):
-    src = removeComments(source())
+    src = removeComments(getSource())
 
     abc = []
 
