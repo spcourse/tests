@@ -1,10 +1,11 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
 import math
 
-@t.test(0)
+from checkpy import *
+
+only("randommaths.py")
+
+@test()
 def correctAmount(test):
-	test.test = lambda : assertlib.numberOnLine(math.e, lib.getLine(lib.outputOf(_fileName), 0), deviation = 0.0027)
-	test.description = lambda : "yields the correct answer"
-	test.succes = lambda info : "does the number ring familiar?"
+	"""randommaths.py yields the correct answer"""
+	test.success = "does the number ring familiar?"
+	assert approx(math.e, abs=0.0027) in static.getNumbersFrom(outputOf()) 

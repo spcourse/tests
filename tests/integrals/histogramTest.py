@@ -13,13 +13,7 @@ def hasSomRandomGetallen():
 def correctBelow40():
     """prints, on the first line, how often the sum is less than 40"""
     firstLine = outputOf().split("\n")[0]
-
-    numbers = []
-    for item in firstLine.split():
-        try:
-            numbers.append(float(item))
-        except ValueError:
-            pass
+    numbers = static.getNumbersFrom(firstLine)
 
     assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
         "make sure you output a sentence containing the answer on the first line of output"
@@ -33,12 +27,7 @@ def correctAbove60():
     assert len(lines) > 1
     secondLine = lines[1]
 
-    numbers = []
-    for item in secondLine.split():
-        try:
-            numbers.append(float(item))
-        except ValueError:
-            pass
+    numbers = static.getNumbersFrom(secondLine)
 
     assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
         "make sure you output a sentence containing the answer on the first line of output"
