@@ -8,11 +8,19 @@ from notAllowedCode import *
 
 
 only("monopoly_realistic.py")
+require("monopoly.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
 
-@test(timeout=90)
+@test()
+def codeShieldedByMain():
+	"""if __name__ == "__main__" is present"""
+	notAllowedCode({"break": "break"})
+	assert 'if __name__ == "__main__":' in static.getSource()
+
+
+@passed(codeShieldedByMain, timeout=90, hide=False)
 def hassimulate_monopoly_games():
 	"""defines simulate_monopoly_games with the correct number of parameters"""
 	notAllowedCode({"break": "break"})
@@ -51,7 +59,8 @@ def correctAverageDiff2():
 				return line
 		return ""
 
-	line = findline(outputOf())
+	output = outputOf(overwriteAttributes=[("__name__", "__main__")])
+	line = findline(output)
 
 	if not line:
 		return False, "Check the assignment for the correct output format of the solution."

@@ -2,6 +2,7 @@ from checkpy import *
 
 import sys
 import pathlib
+from unittest.mock import patch, Mock
 
 sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from notAllowedCode import *
@@ -42,36 +43,37 @@ def hassimulate_monopolyAndsimulate_monopoly_games():
 @passed(hassimulate_monopolyAndsimulate_monopoly_games, timeout=120, hide=False)
 def correctAverageTrump(test):
 	"""Monopoly works for Trump-mode"""
-	simulate_monopoly_games = getFunction("simulate_monopoly_games")
-	nArguments = len(simulate_monopoly_games.arguments)
+	monopoly = getModule()
+	nArguments = len(monopoly.simulate_monopoly_games.arguments)
 
 	assert nArguments in [1, 2],\
 		"Make sure that the function simulate_monopoly_games with Trumpmode accepts 1 argument and with starting_money 2 arguments"
 
-	# Trump
-	if nArguments == 1:
-		result = simulate_monopoly_games(10000)
-		test.success = "The code works without starting_money, you can now proceed with adding starting_money!"
-	# starting money, 1 player
-	else:
-		result = simulate_monopoly_games(10000, 1000000)
+	with patch.object(monopoly, "throw_two_dice", Mock(return_value=3)):
+		# Trump
+		if nArguments == 1:
+			result = monopoly.simulate_monopoly_games(10000)
+			test.success = "The code works without starting_money, you can now proceed with adding starting_money!"
+		# starting money, 1 player
+		else:
+			result = monopoly.simulate_monopoly_games(10000, 1000000)
 
-	assert result is not None,\
-		"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
-	assert result == approx(147, abs=2)
+		assert result is not None,\
+			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
+		assert result == approx(147, abs=2)
 
 
 @passed(hassimulate_monopolyAndsimulate_monopoly_games, timeout=120, hide=False)
 def correctAverageStartingMoney():
 	"""Monopoly works with 1500 euro starting_money"""
-	simulate_monopoly_games = getFunction("simulate_monopoly_games")
+	monopoly = getModule()
 
-	assert len(simulate_monopoly_games.arguments) == 2,\
+	assert len(monopoly.simulate_monopoly_games.arguments) == 2,\
 		"Did you implement starting money yet? If not, ignore this frowny."
+	
+	with patch.object(monopoly, "throw_two_dice", Mock(return_value=3)):
+		result = monopoly.simulate_monopoly_games(10000, 1500)
+		assert result is not None,\
+			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
-	result = simulate_monopoly_games(10000, 1500)
-	
-	assert result is not None,\
-		"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
-	
-	assert result == approx(186.5, abs=2.5)
+		assert result == approx(186.5, abs=2.5)
