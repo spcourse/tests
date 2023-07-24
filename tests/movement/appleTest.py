@@ -20,6 +20,7 @@ testDef1 = helpers.assertDefFactory(
 	before=lambda: notAllowedCode({"break": "break"})
 )
 
+
 def apple1Hint(output):
 	t, v = output
 	if v == approx(4.52, abs=0.1) or t == approx(159.47, abs=1):
