@@ -1,93 +1,91 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import importlib
-
-import os
+from typing import Tuple
+import pathlib
 import sys
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
+from checkpy import *
 
+sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
 from notAllowedCode import *
-from helpers import apply_function, InvalidFunctionApplication, similar, has_function
-
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
-
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+import helpers
 
 
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
+only("apple.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
-@t.test(0)
-def containsRequiredFunction1Definition(test):
-	notAllowed = {"break": "break"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
-	has_function(test, _fileName, "simulate_apple1", ['x', 'dt'])
 
-@t.passed(containsRequiredFunction1Definition)
-@t.test(1)
-def testApple1(test):
-	def testMethod():
-		try:
-			_input = 100, 0.01
-			_fn = lib.getFunction("simulate_apple1", _fileName)
-			_t, _v = apply_function(_fn, _input, (float, float))
-		except InvalidFunctionApplication as e:
-			return False, e.message
-		except Exception as e:
-			return False, f"An error occured while running the function: \n {type(e).__name__}: {str(e)}"
+testDef1 = helpers.assertDefFactory(
+	function="simulate_apple1",
+	parameters=["x", "dt"],
+	before=lambda: notAllowedCode({"break": "break"})
+)
 
-		if similar(_v, 4.52, atol = 0.1) or similar(_t, 159.47, atol = 1):
-			return False, "Did you mix up the order of the return values?"
-		if similar(_v, 44.3, atol = 0.3):
-			return False, "Did you forget to convert to km/h?"
-		if similar(_t, 4.52, atol = 0.1) and similar(_v, 159.47, atol = 1):
-			return True, ""
-		return False, f"Did not expect output {_t, _v} (with input {_input})"
+def apple1Hint(output):
+	t, v = output
+	if v == approx(4.52, abs=0.1) or t == approx(159.47, abs=1):
+		assert False, "Did you mix up the order of the return values?"
 
-	test.test = testMethod
-	test.description = lambda : "Testing simulate_apple1()"
-	test.timeout = lambda : 90
+	if v == approx(44.3, abs=0.3):
+		assert False, "Did you forget to convert to km/h?"
 
-@t.test(2)
-def containsRequiredFunction2Definition(test):
-	has_function(test, _fileName, "simulate_apple2", ['dt'])
+testApple1 = passed(testDef1, timeout=90, hide=False)(
+	helpers.assertFuncFactory(
+		function="simulate_apple1",
+		input=(100, 0.01),
+		output=(approx(159.47, abs=0.1), approx(4.52, abs=0.1)),
+		outputType=Tuple[float, float],
+		hint=apple1Hint
+	)
+)
 
-@t.passed(containsRequiredFunction2Definition)
-@t.test(3)
-def testApple2(test):
-	def testMethod2():
-		_fn = lib.getFunction("simulate_apple2", _fileName)
-		try:
-			_t = apply_function(_fn, (0.01,), (float,))
-		except InvalidFunctionApplication as e:
-			return False, e.message
-		if assertlib.between(_t, 2.82, 2.86):
-			return True, ""
-		return False, f"Did not expect output {_t} (with input: 0.01)"
 
-	test.test = testMethod2
-	test.description = lambda : "Testing simulate_apple2()"
-	test.timeout = lambda : 90
+testDef2 = helpers.assertDefFactory(
+	function="simulate_apple2",
+	parameters=["dt"],
+	before=lambda: notAllowedCode({"break": "break"})
+)
+
+
+testApple2 = passed(testDef2, timeout=90, hide=False)(
+	helpers.assertFuncFactory(
+		function="simulate_apple2",
+		input=(0.01,),
+		output=approx(2.84, abs=0.02),
+		outputType=float
+	)
+)
+
+## pytest v2 style
+# @test()
+# def testDef1():
+# 	"""Defines the function `simulate_apple1()`"""
+# 	notAllowedCode({"break": "break"})
+
+# 	assert "simulate_apple1" in static.getFunctionDefinitions()
+
+# 	simulate_apple1 = getFunction("simulate_apple1")
+
+# 	assert simulate_apple1.parameters == ["x", "dt"],\
+# 		"make sure the function has the correct parameters"
+
+
+# @passed(testDef1, timeout=90, hide=False)
+# def testApple1():
+# 	"""Testing simulate_apple1()"""
+# 	x, dt = 100, 0.01
+# 	simulate_apple1 = getFunction("simulate_apple1")
+# 	output = simulate_apple1(x, dt)
+
+# 	assert output == Type(Tuple[float, float]),\
+# 		"make sure the function returns the correct type"
+
+# 	t, v = output
+
+# 	if v == approx(4.52, abs=0.1) or t == approx(159.47, abs=1):
+# 		assert False, "Did you mix up the order of the return values?"
+
+# 	if v == approx(44.3, abs=0.3):
+# 		assert False, "Did you forget to convert to km/h?"
+
+# 	assert t == approx(4.52, abs=0.1) and v == approx(159.47, abs=0.1),\
+# 		f"Did not expect output {t}, {v} (with input {x}, {dt})"
