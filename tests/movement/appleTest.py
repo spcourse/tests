@@ -1,92 +1,51 @@
 from typing import Tuple
-import pathlib
-import sys
+import ast
 
 from checkpy import *
-
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from notAllowedCode import *
-import helpers
-
 
 only("apple.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
+def restrict(state: builder.FunctionState):
+	assert ast.Break not in static.AbstractSyntaxTree(state.fileName)
 
-testDef1 = helpers.assertDefFactory(
-	function="simulate_apple1",
-	parameters=["x", "dt"],
-	before=lambda: notAllowedCode({"break": "break"})
-)
-
-
-def apple1Hint(output):
-	t, v = output
-	if v == approx(4.52, abs=0.1) or t == approx(159.47, abs=1):
-		assert False, "Did you mix up the order of the return values?"
+def apple1Hint(state: builder.FunctionState):
+	t, v = state.returned
+	if v == approx(159.47, abs=1) or t == approx(4.52, abs=0.1):
+		raise AssertionError("Did you mix up the order of the return values?")
 
 	if v == approx(44.3, abs=0.3):
-		assert False, "Did you forget to convert to km/h?"
+		raise AssertionError("Did you forget to convert to km/h?")
 
-testApple1 = passed(testDef1, timeout=90, hide=False)(
-	helpers.assertFuncFactory(
-		function="simulate_apple1",
-		input=(100, 0.01),
-		output=(approx(159.47, abs=0.1), approx(4.52, abs=0.1)),
-		outputType=Tuple[float, float],
-		hint=apple1Hint
-	)
+apple1Builder = (builder
+	.function("simulate_apple1")
+	.do(restrict)
+	.params("x", "dt")
+    .returnType(Tuple[float, float])
+)
+
+testAppleDef1 = apple1Builder.build()
+
+testApple1 = passed(testAppleDef1, hide=False)(apple1Builder
+	.call(100, 0.01)
+	.do(apple1Hint)
+	.returns((approx(159.47, abs=0.1), approx(4.52, abs=0.1)))
+	.build()
 )
 
 
-testDef2 = helpers.assertDefFactory(
-	function="simulate_apple2",
-	parameters=["dt"],
-	before=lambda: notAllowedCode({"break": "break"})
+apple2Builder = (builder
+	.function("simulate_apple2")
+	.do(restrict)
+	.params("x")
+	.returnType(float)
 )
 
+testAppleDef2 = apple2Builder.build()
 
-testApple2 = passed(testDef2, timeout=90, hide=False)(
-	helpers.assertFuncFactory(
-		function="simulate_apple2",
-		input=(0.01,),
-		output=approx(2.84, abs=0.02),
-		outputType=float
-	)
+testApple2 = passed(testAppleDef2, hide=False)(apple2Builder
+	.call(0.01)
+	.returns(approx(2.84, abs=0.02))
+	.build()
 )
-
-## pytest v2 style
-# @test()
-# def testDef1():
-# 	"""Defines the function `simulate_apple1()`"""
-# 	notAllowedCode({"break": "break"})
-
-# 	assert "simulate_apple1" in static.getFunctionDefinitions()
-
-# 	simulate_apple1 = getFunction("simulate_apple1")
-
-# 	assert simulate_apple1.parameters == ["x", "dt"],\
-# 		"make sure the function has the correct parameters"
-
-
-# @passed(testDef1, timeout=90, hide=False)
-# def testApple1():
-# 	"""Testing simulate_apple1()"""
-# 	x, dt = 100, 0.01
-# 	simulate_apple1 = getFunction("simulate_apple1")
-# 	output = simulate_apple1(x, dt)
-
-# 	assert output == Type(Tuple[float, float]),\
-# 		"make sure the function returns the correct type"
-
-# 	t, v = output
-
-# 	if v == approx(4.52, abs=0.1) or t == approx(159.47, abs=1):
-# 		assert False, "Did you mix up the order of the return values?"
-
-# 	if v == approx(44.3, abs=0.3):
-# 		assert False, "Did you forget to convert to km/h?"
-
-# 	assert t == approx(4.52, abs=0.1) and v == approx(159.47, abs=0.1),\
-# 		f"Did not expect output {t}, {v} (with input {x}, {dt})"
