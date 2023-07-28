@@ -35,7 +35,7 @@ simulate_ultimate_free_fall = (
     declarative.function("simulate_ultimate_free_fall")
     .do(restrict)
     .params('r_start', 'dt')
-    .returnType(typing.Tuple[typing.List, typing.List, typing.List])
+    .returnType(typing.Tuple[typing.List[float], typing.List[float], typing.List[float]])
 )
 
 testDef = test()(simulate_ultimate_free_fall)
