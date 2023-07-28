@@ -63,7 +63,7 @@ def correctAverageDiff2():
 	line = findline(output)
 
 	if not line:
-		return False, "Check the assignment for the correct output format of the solution."
+		raise AssertionError("Check the assignment for the correct output format of the solution.")
 
 	numbers = static.getNumbersFrom(line)
 
