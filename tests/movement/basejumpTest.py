@@ -33,7 +33,7 @@ def validate_sim(input_params, expected_time, xl, tl):
 
 
 def restrict(state: declarative.FunctionState):
-    assert ast.Break not in static.AbstractSyntaxTree()
+    assert ast.Break not in static.AbstractSyntaxTree(state.fileName)
 
 simulate_free_fall = (
     declarative.function("simulate_free_fall")
