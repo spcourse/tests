@@ -32,43 +32,36 @@ def validate_sim(input_params, expected_time, xl, tl):
 	raise AssertionError(f"Did not expect a total elapsed time of {tl[-1]} (with input {input_params})")
 
 
-def restrict(state: builder.FunctionState):
+def restrict(state: declarative.FunctionState):
 	assert ast.Break not in static.AbstractSyntaxTree()
 
-testDef = (builder
-	.function("simulate_free_fall")
+simulate_free_fall = (
+	declarative.function("simulate_free_fall")
 	.do(restrict)
 	.params("x_start", "x_end", "m", "xi", "dt")
-	.build()
+	.returnType(typing.Tuple[typing.List[float], typing.List[float]])
 )
 
-testBasejumpNew1 = passed(testDef, hide=False)(builder
-	.function("simulate_free_fall")
-	.timeout(90)
-	.returnType(typing.Tuple[typing.List[float], typing.List[float]])
+testDef = test()(simulate_free_fall)
+
+testBasejump1 = passed(testDef, timeout=90, hide=False)(
+	simulate_free_fall
 	.call(1000.0, 200.0, 72.0, 0, 0.01)
 	.do(lambda state: validate_sim(state.args, 12.77, state.returned[0], state.returned[1]))
 	.description("Test simulation without air resistance.")
-	.build()
 )
 
-testBasejumpNew2 = passed(testDef, hide=False)(builder
-	.function("simulate_free_fall")
-	.timeout(90)
-	.returnType(typing.Tuple[typing.List[float], typing.List[float]])
+testBasejump2 = passed(testDef, timeout=90, hide=False)(
+	simulate_free_fall
 	.call(1000.0, 200.0, 72.0, 0.24, 0.01)
 	.do(lambda state: validate_sim(state.args, 18.58, state.returned[0], state.returned[1]))
 	.description("Test simulation with air resistance.")
-	.build()
 )
 
-testBasejumpNew3 = passed(testDef, hide=False)(builder
-	.function("simulate_free_fall")
-	.timeout(90)
-	.returnType(typing.Tuple[typing.List[float], typing.List[float]])
+testBasejump3 = passed(testDef, timeout=90, hide=False)(
+	simulate_free_fall
 	.call(1200, 300, 78, 0.24, 0.01)
 	.do(lambda state: validate_sim(state.args, 19.93, state.returned[0], state.returned[1]))
-	.build()
 )
 
 @test()
