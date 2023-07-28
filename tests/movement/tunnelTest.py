@@ -6,7 +6,7 @@ only("tunnel.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
-def validate_sim1(actual, expected):
+def validate_sim(actual, expected):
     rl, vl, tl = actual
     assert len(rl) == len(vl) == len(tl), "Function is expected to return three lists of the same length."
     assert len(rl) > 0, "Each returned list must contain at least one element."
@@ -40,32 +40,28 @@ simulate_ultimate_free_fall = (
 
 testDef = test()(simulate_ultimate_free_fall)
 
-testTunnel1 = passed(testDef, timeout=90, hide=False)(
-    simulate_ultimate_free_fall
-    .call(6.38e6, 0.01)
-    .do(lambda state: validate_sim1(state.returned, (-6380124.4,  6380249, -7925, 7925.2)))
-    .description("Correct speeds and distances starting at height 6.38e6.")
-)
+@passed(testDef, timeout=90, hide=False)
+def testTunnel1():
+    """Correct speeds and distances starting at height 6.38e6."""
+    state = simulate_ultimate_free_fall.call(6.38e6, 0.01)()
+    validate_sim(state.returned, (-6380124.4, 6380249, -7925, 7925.2))
 
-def assertCorrectTime(timeList):
+@passed(testTunnel1, timeout=90, hide=False)
+def testTunnel2():
+    """Correct simulation length."""
+    state = simulate_ultimate_free_fall.call(6.38e6, 0.01)()
+
+    timeList = state.returned[2]
     if timeList[-1] != approx(5058.3, abs=4):
         raise AssertionError(
             f"Did not expect the time of the simulated free fall to be {timeList[-1]} seconds."
         )
 
-testTunnel2 = passed(testTunnel1, timeout=90, hide=False)(
-    simulate_ultimate_free_fall
-    .call(6.38e6, 0.01)
-    .do(lambda state: assertCorrectTime(state.returned[2]))
-    .description("Correct simulation length.")
-)
-
-testTunnel3 = passed(testDef, timeout=90, hide=False)(
-    simulate_ultimate_free_fall
-    .call(3474, 0.01)
-    .do(lambda state: validate_sim1(state.returned, (-3474, 3474, -4.315, 4.315)))
-    .description("Correct speeds and distances starting at height 3474")
-)
+@passed(testDef, timeout=90, hide=False)
+def tustTunnel3():
+    """Correct speeds and distances starting at height 3474"""
+    state = simulate_ultimate_free_fall.call(3474, 0.01)()
+    validate_sim(state.returned, (-3474, 3474, -4.315, 4.315))
 
 @test()
 def showsGraph():
