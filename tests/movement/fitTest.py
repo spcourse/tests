@@ -1,62 +1,26 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import importlib
+import ast
+from checkpy import *
 
-import os
-import sys
+only("fit.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
+@test()
+def containsRequiredFunctionDefinitions():
+	"""defines the function fit()"""
+	assert ast.Break not in static.AbstractSyntaxTree()
+	assert "fit" in static.getFunctionDefinitions()
 
-from notAllowedCode import *
+@passed(containsRequiredFunctionDefinitions, hide=False)
+def correctC():
+	"""prints the best value of c"""
+	firstLine = outputOf().split("\n")[0]
+	assert approx(60.3, abs=1) in static.getNumbersFrom(firstLine)
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
+@passed(containsRequiredFunctionDefinitions, hide=False)
+def correctUncertainy():
+	"""prints the uncertainty of c"""
+	assert outputOf().count("\n") >= 2, "expected fit.py to print at least two lines of output"
 
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
-
-
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
-
-
-@t.test(0)
-def containsRequiredFunctionDefinitions(test):
-
-	notAllowed = {"break": "break"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
-
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "fit")
-	test.description = lambda : "defines the function `fit()`"
-
-@t.passed(containsRequiredFunctionDefinitions)
-@t.test(10)
-def correctC(test):
-	test.test = lambda : assertlib.numberOnLine(60.3, lib.getLine(lib.outputOf(_fileName), 0), deviation = 1)
-	test.description = lambda : "prints the best value of c"
-
-@t.passed(containsRequiredFunctionDefinitions)
-@t.test(11)
-def correctUncertainy(test):
-	test.test = lambda : assertlib.numberOnLine(1.5, lib.getLine(lib.outputOf(_fileName), 1), deviation = 0.1)
-	test.description = lambda : "prints the uncertainty of c"
+	secondLine = outputOf().split("\n")[1]
+	assert approx(1.5, abs=0.1) in static.getNumbersFrom(secondLine)
