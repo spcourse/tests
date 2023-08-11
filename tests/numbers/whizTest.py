@@ -1,4 +1,3 @@
-
 from checkpy import *
 
 @test()
