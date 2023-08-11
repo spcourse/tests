@@ -1,6 +1,3 @@
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-
 import ast
 from checkpy import *
 
