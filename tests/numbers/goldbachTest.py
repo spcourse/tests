@@ -1,64 +1,50 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
+import ast
+from checkpy import *
 
-import os
-import sys
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
+@test(timeout=90)
+def allEvenNumbersInOutput():
+	"""output contains all even numbers below 1000"""
+	assert ast.Break not in static.AbstractSyntaxTree()
+	
+	result = outputOf()
+	numbers = static.getNumbersFrom(result)
+	
+	actual = sorted({n for n in numbers if n % 2 == 0 and 4 <= n <= 1000})
+	expected = sorted(range(4, 1001, 2))
+	assert actual == expected
 
-from notAllowedCode import *
 
-@t.test(0)
-def allEvenNumbersInOutput(test):
-	def testMethod():
-		result = lib.outputOf(_fileName)
-		evenNumbers = set(range(4, 1001, 2))
-		for line in result.split("\n"):
-			if line == "\n":
-				continue
-			evenNumbers -= set(lib.getPositiveIntegersFromString(line))
-		testResult = len(evenNumbers) == 0
-		return testResult
+@passed(allEvenNumbersInOutput, timeout=90, hide=False)
+def allCalculationsCorrect():
+	"""calculations on each line are correct"""
+	result = outputOf()
 
-	notAllowed = {"break": "break"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
+	for line in result.split("\n"):
+		if line.strip() == "":
+			continue
+	
+		numbers = static.getNumbersFrom(line)
+		assert len(numbers) == 3, "expected each line of output to contain exactly three numbers"
+		
+		outcome = max(numbers)
+		numbers.remove(outcome)
+		assert outcome == numbers[0] + numbers[1], f"incorrect calculation on line: {line}"
+	
 
-	test.test = testMethod
+@passed(allCalculationsCorrect, timeout=90, hide=False)
+def allCalculationsContainTwoPrimes():
+	"""calculations on each line contain precisely two primes"""
+	primes = set([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997])
+	result = outputOf()
+	
+	for line in result.split("\n"):
+		if line.strip() == "":
+			continue
 
-	test.description = lambda : "output contains all even numbers below 1000"
-	test.timeout = lambda : 90
+		numbers = static.getNumbersFrom(line)
+		numbers.remove(max(numbers))
 
-@t.test(1)
-def allCalculationsCorrect(test):
-	def testMethod():
-		result = lib.outputOf(_fileName)
-		for line in result.split("\n"):
-			if line.strip() == "":
-				continue
-			numbers = lib.getPositiveIntegersFromString(line)
-			if not any(sum(numbers) / 2 == n for n in numbers):
-				return False, "\"{}\" is an incorrect calculation".format(line)
-		return True
-	test.test = testMethod
-
-	test.description = lambda : "calculations on each line are correct"
-	test.timeout = lambda : 90
-
-@t.test(2)
-def allCalculationsContainTwoPrimes(test):
-	def testMethod():
-		primes = set([2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137, 139, 149, 151, 157, 163, 167, 173, 179, 181, 191, 193, 197, 199, 211, 223, 227, 229, 233, 239, 241, 251, 257, 263, 269, 271, 277, 281, 283, 293, 307, 311, 313, 317, 331, 337, 347, 349, 353, 359, 367, 373, 379, 383, 389, 397, 401, 409, 419, 421, 431, 433, 439, 443, 449, 457, 461, 463, 467, 479, 487, 491, 499, 503, 509, 521, 523, 541, 547, 557, 563, 569, 571, 577, 587, 593, 599, 601, 607, 613, 617, 619, 631, 641, 643, 647, 653, 659, 661, 673, 677, 683, 691, 701, 709, 719, 727, 733, 739, 743, 751, 757, 761, 769, 773, 787, 797, 809, 811, 821, 823, 827, 829, 839, 853, 857, 859, 863, 877, 881, 883, 887, 907, 911, 919, 929, 937, 941, 947, 953, 967, 971, 977, 983, 991, 997])
-		result = lib.outputOf(_fileName)
-		for line in result.split("\n"):
-			if line.strip() == "":
-				continue
-			numbers = lib.getPositiveIntegersFromString(line)
-			if sum(1 for n in numbers if n in primes) != 2:
-				return False, "\"{}\" does not contain precisely two primes".format(line)
-		return True
-	test.test = testMethod
-
-	test.description = lambda : "calculations on each line contain precisely two primes"
-	test.timeout = lambda : 90
+		for n in numbers:
+			if n not in primes:
+				raise AssertionError(f"{n} is not a prime number on line: {line}")
