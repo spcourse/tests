@@ -16,7 +16,7 @@ def outputsYears():
 @passed(outputsYears, timeout=90, hide=False)
 def outputsOneYearPerLine():
 	"""Prints exactly one year per line"""
-	result = outputOf(stdinArgs=[2000,2010])
+	result = outputOf(stdinArgs=[2000, 2010])
 
 	for line in result.split("\n"):
 		if line.strip() == "":
