@@ -4,14 +4,6 @@ from checkpy import *
 only("leap.py")
 
 
-def clean_lines(text):
-	lines = text.split('\n')
-	lines = [line.strip() for line in lines]
-	if lines[-1] == "":
-		lines = lines[:-1]
-	return lines
-
-
 @test(timeout=90)
 def outputsYears():
 	"""Prints years"""
