@@ -1,6 +1,8 @@
 import ast
 from checkpy import *
 
+only("birthday.py")
+
 
 @test(timeout=90)
 def outputsYears():
