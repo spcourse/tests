@@ -1,33 +1,20 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
+import ast
+from checkpy import *
 
-import os
-import sys
+@test(timeout=90)
+def correctBarriers():
+	"""prints the correct start and end of the sequence"""
+	assert ast.Break not in static.AbstractSyntaxTree()
+	
+	firstLine = outputOf().split("\n")[0]
+	assert "9552" in firstLine and "9586" in firstLine, "note that primes are not actually part of the sequence!"
 
-parpath = os.path.abspath(os.path.join(os.path.realpath(__file__), os.pardir, os.pardir))
-sys.path.append(parpath)
 
-from notAllowedCode import *
-
-@t.test(0)
-def correctBarriers(test):
-	def testMethod():
-		result = lib.getLine(lib.outputOf(_fileName), 0)
-		testResult = assertlib.match(result, ".*9552.*9586.*") or assertlib.match(result, ".*9586.*9552.*")
-		return testResult
-	test.test = testMethod
-
-	notAllowed = {"break": "break"}
-	notAllowedCode(test, lib.source(_fileName), notAllowed)
-
-	test.description = lambda : "prints the correct start and end of the sequence"
-	test.fail = lambda info : "note that primes are not actually part of the sequence!"
-	test.timeout = lambda : 90
-
-@t.test(10)
-def correctDistance(test):
-	test.test = lambda : assertlib.numberOnLine(35, lib.getLine(lib.outputOf(_fileName), 1))
-	test.fail = lambda info : "is it printed on a separate second line?"
-	test.description = lambda : "prints the correct length of the sequence"
-	test.timeout = lambda : 90
+@passed(correctBarriers, timeout=90, hide=False)
+def correctDistance():
+	"""prints the correct length of the sequence"""
+	output = outputOf()
+	assert output.count("\n") == 2, "expected exactly 2 lines of output"
+	
+	secondLine = output.split("\n")[1]
+	assert "35" in secondLine, "is the length printed on the second line?"
