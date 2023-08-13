@@ -15,5 +15,5 @@ def correctDistance():
 
 @test()
 def showsGraph():
-    """Either saves a graph into a file, or shows a graph on the screen."""
+    """either saves a graph into a file, or shows a graph on the screen"""
     assert "savefig" in static.getFunctionCalls() or "show" in static.getFunctionCalls()
