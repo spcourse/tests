@@ -1,16 +1,15 @@
 from checkpy import *
 
-import pathlib
+import ast
 import re
-import sys
 
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from notAllowedCode import *
-
+only("pyramid.py")
 
 @test()
 def exactMario1():
 	"""prints a well-formed pyramid of height 1"""
+	assert ast.Mult not in static.AbstractSyntaxTree()
+
 	pyramid, regex = getPyramid(1)
 	if regex.match(outputOf(stdinArgs=[1])) is None:
 		assert outputOf(stdinArgs=[1]) == pyramid
@@ -35,9 +34,6 @@ def exactMario23():
 @passed(exactMario3, hide=False)
 def handlesWrongInput():
 	""""rejects heights of -100 and 24, then accepts a height of 3"""
-	notAllowedCode({
-		"the * operator, but instead loops": "*"
-	})
 	output = outputOf(stdinArgs=[-100, 24, 3])
 	pyramid, regex = getPyramid(3)
 	if regex.match(output) is None:

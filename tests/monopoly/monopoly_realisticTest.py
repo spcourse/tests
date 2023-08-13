@@ -1,10 +1,6 @@
-import pathlib
-import sys
+import ast
 
 from checkpy import *
-
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from notAllowedCode import *
 
 
 only("monopoly_realistic.py")
@@ -16,15 +12,13 @@ monkeypatch.patchNumpy()
 @test()
 def codeShieldedByMain():
 	"""if __name__ == "__main__" is present"""
-	notAllowedCode({"break": "break"})
+	assert ast.Break not in static.AbstractSyntaxTree()
 	assert 'if __name__ == "__main__":' in static.getSource()
 
 
 @passed(codeShieldedByMain, timeout=90, hide=False)
 def hassimulate_monopoly_games():
 	"""defines simulate_monopoly_games with the correct number of parameters"""
-	notAllowedCode({"break": "break"})
-
 	assert "simulate_monopoly_games" in static.getFunctionDefinitions()
 
 	assert len(getFunction("simulate_monopoly_games").parameters) == 3,\

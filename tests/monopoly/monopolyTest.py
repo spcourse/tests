@@ -1,11 +1,7 @@
 from checkpy import *
 
-import sys
-import pathlib
+import ast
 from unittest.mock import patch, Mock
-
-sys.path.insert(0, str(pathlib.Path(__file__).parent.parent))
-from notAllowedCode import *
 
 
 only("monopoly.py")
@@ -16,7 +12,7 @@ monkeypatch.patchNumpy()
 @test()
 def codeShieldedByMain():
 	"""if __name__ == "__main__" is present"""
-	notAllowedCode({"break": "break"})
+	assert ast.Break not in static.AbstractSyntaxTree()
 	assert 'if __name__ == "__main__":' in static.getSource()
 
 
