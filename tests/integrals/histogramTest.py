@@ -1,55 +1,35 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import math
-import importlib
+from checkpy import *
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
+only("histogram.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+@test()
+def hasSomRandomGetallen():
+    """defines the function sum_random_numbers()"""
+    assert "sum_random_numbers" in static.getFunctionDefinitions()
 
+@passed(hasSomRandomGetallen, hide=False)
+def correctBelow40():
+    """prints, on the first line, how often the sum is less than 40"""
+    firstLine = outputOf().split("\n")[0]
+    numbers = static.getNumbersFrom(firstLine)
 
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
+    assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
+        "make sure you output a sentence containing the answer on the first line of output"
 
+    assert '40' in firstLine or 'veertig' in firstLine or 'forty' in firstLine
 
-@t.test(0)
-def hasSomRandomGetallen(test):
-    test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "sum_random_numbers")
-    test.description = lambda : "defines the function sum_random_numbers()"
+@passed(hasSomRandomGetallen, hide=False)
+def correctAbove60():
+    """prints, on the second line, how often the sum is more than 60"""
+    lines = outputOf().split("\n")
+    assert len(lines) > 1
+    secondLine = lines[1]
 
-@t.passed(hasSomRandomGetallen)
-@t.test(10)
-def correctBelow40(test):
-    tsts = ['40', 'veertig', 'forty']
-    test.test = lambda : (assertlib.numberOnLine(5, lib.getLine(lib.outputOf(_fileName), 0), deviation = 5) or assertlib.numberOnLine(0.05, lib.getLine(lib.outputOf(_fileName), 0), deviation = 0.05)) and sum([assertlib.contains(lib.outputOf(_fileName), tst) for tst in tsts])
-    test.fail = lambda info : "make sure you output a sentence containing the answer on the first line of output"
-    test.description = lambda : "prints, on the first line, how often the sum is less than 40"
+    numbers = static.getNumbersFrom(secondLine)
 
-@t.passed(hasSomRandomGetallen)
-@t.test(20)
-def correctAbove60(test):
-	tsts = ['60', 'zestig', 'sixty']
-	test.test = lambda : (assertlib.numberOnLine(5, lib.getLine(lib.outputOf(_fileName), 1), deviation = 5) or assertlib.numberOnLine(0.05, lib.getLine(lib.outputOf(_fileName), 1), deviation = 0.05))and sum([assertlib.contains(lib.outputOf(_fileName), tst) for tst in tsts])
-	test.fail = lambda info : "make sure you output a sentence containing the answer on the second line of output"
-	test.description = lambda : "prints, on the first line, how often the sum is more than 60"
+    assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
+        "make sure you output a sentence containing the answer on the first line of output"
+
+    assert '60' in secondLine or 'zestig' in secondLine or 'sixty' in secondLine

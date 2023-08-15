@@ -1,43 +1,15 @@
-import checkpy.tests as t
-import checkpy.lib as lib
-import checkpy.assertlib as assertlib
-import importlib
+from checkpy import *
 
-def before():
-	try:
-		import matplotlib
-		import warnings
-		warnings.filterwarnings("ignore")
-		matplotlib.use("Agg")
-		import matplotlib.pyplot as plt
-		plt.switch_backend("Agg")
-		lib.neutralizeFunction(plt.pause)
-		lib.neutralizeFunction(plt.show)
-	except ImportError:
-		pass
+only("distance.py")
+monkeypatch.patchMatplotlib()
+monkeypatch.patchNumpy()
 
-	try:
-		import numpy
-		numpy.seterr('raise')
-	except ImportError:
-		pass
+@test()
+def hasVierkant():
+	"""defines the function square()"""
+	assert "square" in static.getFunctionDefinitions()
 
-def after():
-	try:
-		import matplotlib.pyplot as plt
-		plt.switch_backend("TkAgg")
-		importlib.reload(plt)
-	except ImportError:
-		pass
-
-
-@t.test(10)
-def hasVierkant(test):
-	test.test = lambda : assertlib.fileContainsFunctionDefinitions(_fileName, "square")
-	test.description = lambda : "defines the function square()"
-
-@t.passed(hasVierkant)
-@t.test(11)
-def correctVierkant(test):
-	test.test = lambda : assertlib.between(lib.getFunction("square", _fileName)(10000), 0.51, 0.54)
-	test.description = lambda : "square() yields the correct distance"
+@passed(hasVierkant, hide=False)
+def correctVierkant():
+	"""square() yields the correct distance"""
+	assert getFunction("square")(10000) == approx(0.525, abs=0.015)
