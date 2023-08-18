@@ -48,3 +48,47 @@ def leapYears400():
 	expected = [1992, 1996, 2000, 2004, 2008, 2012, 2016]
 	actual = sorted(set(static.getNumbersFrom(outputOf(stdinArgs=[1990, 2020]))))
 	assert actual == expected, "Did you implement a rule such that every 400th year is a leap year?"
+
+
+@test(timeout=90)
+def handlesEqualYears():
+    """Handles equal first and last year correctly"""
+    assert ast.Break not in static.AbstractSyntaxTree()
+    
+    result = outputOf(stdinArgs=[2000, 2000, 2010])
+    expected = [2000, 2004, 2008]
+    actual =  sorted(set(static.getNumbersFrom(result)))
+    assert actual == expected, "Did you ensure that the program asks for a new last year when the first year is equal to the last year?"
+
+
+@test(timeout=90)
+def handlesDecreasingYears():
+    """Handles decreasing years correctly"""
+    assert ast.Break not in static.AbstractSyntaxTree()
+    
+    result = outputOf(stdinArgs=[2000, 1990, 2010])
+    expected = [2000, 2004, 2008]
+    actual =  sorted(set(static.getNumbersFrom(result)))
+    assert actual == expected, "Did you ensure that the program asks for a new last year when the first year is greater than the last year?"
+
+
+@test(timeout=90)
+def leapYearAt400Boundary():
+    """Identifies a year that is a multiple of 400 as a leap year"""
+    assert ast.Break not in static.AbstractSyntaxTree()
+    
+    result = outputOf(stdinArgs=[2400, 2401])
+    expected = [2400]
+    actual =  sorted(set(static.getNumbersFrom(result)))
+    assert actual == expected, "Did you implement the rule that every 400th year is a leap year?"
+
+
+@test(timeout=90)
+def nonLeapYearAt100Boundary():
+    """Identifies a year that is a multiple of 100 (but not 400) as a non-leap year"""
+    assert ast.Break not in static.AbstractSyntaxTree()
+    
+    result = outputOf(stdinArgs=[1900, 1901])
+    expected = []
+    actual =  sorted(set(static.getNumbersFrom(result)))
+    assert actual == expected, "Did you implement the rule that every 100th year is not a leap year, unless it is a 400th year?"

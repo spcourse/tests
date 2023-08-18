@@ -3,7 +3,6 @@ from checkpy import *
 
 only("goldbach.py")
 
-
 @test(timeout=90)
 def allEvenNumbersInOutput():
 	"""output contains all even numbers below 1000"""
@@ -15,7 +14,6 @@ def allEvenNumbersInOutput():
 	actual = sorted({n for n in numbers if n % 2 == 0 and 4 <= n <= 1000})
 	expected = sorted(range(4, 1001, 2))
 	assert actual == expected
-
 
 @passed(allEvenNumbersInOutput, timeout=90, hide=False)
 def allCalculationsCorrect():
@@ -50,3 +48,18 @@ def allCalculationsContainTwoPrimes():
 		for n in numbers:
 			if n not in primes:
 				raise AssertionError(f"{n} is not a prime number on line: {line}")
+			
+@passed(allEvenNumbersInOutput, timeout=90, hide=False)
+def AllNumbersPrintedOnce():
+    """output contains all even numbers printed once"""
+    assert ast.Break not in static.AbstractSyntaxTree()
+    
+    result = outputOf()
+    numbers = static.getNumbersFrom(result)
+    
+    actual = [n for n in numbers if n % 2 == 0 and 4 <= n <= 1000]
+    expected = list(range(4, 1001, 2))
+
+    # Check that each even number appears exactly once
+    for num in expected:
+        assert actual.count(num) == 1, f"The number {num} appears in {actual.count(num)} lines. Each even number should appear once."
