@@ -1,10 +1,17 @@
-import ast
 from checkpy import *
+
+import ast
 
 only("leap.py")
 
+@test()
+def noBreakAndImport():
+    """the program does not use break or import statements"""
+    assert ast.Import not in static.AbstractSyntaxTree(), "you cannot use import statements"
+    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
 
-@test(timeout=90)
+
+@passed(noBreakAndImport, timeout=90, hide=False)
 def outputsYears():
 	"""Prints years"""
 	assert ast.Break not in static.AbstractSyntaxTree()

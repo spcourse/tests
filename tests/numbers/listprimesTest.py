@@ -1,12 +1,18 @@
+from checkpy import *
+
 import ast
 import re
 
-from checkpy import *
-
 only("listprimes.py")
 
+@test()
+def noBreakAndImport():
+    """the program does not use break or import statements"""
+    assert ast.Import not in static.AbstractSyntaxTree(), "you cannot use import statements"
+    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
 
-@test(timeout=90)
+
+@passed(noBreakAndImport, timeout=90, hide=False)
 def outputsNumbers():
     """The code outputs numbers"""
     assert ast.Break not in static.AbstractSyntaxTree()
@@ -17,6 +23,7 @@ def outputsNumbers():
     # Check that at least one number was found in the output
     assert len(output) > 0, "No numbers found in the output. Make sure your program prints numbers."
 
+
 @passed(outputsNumbers, timeout=90, hide=False)
 def validInputHandling():
     """Checks if the program asks for retry on invalid input"""
@@ -25,12 +32,14 @@ def validInputHandling():
     actual = list(map(int, re.findall(r'\d+', outputOf(stdinArgs=[2, -5, 1, 10]))))
     assert 7 in actual, "When a user provides a value that is not valid (<= 2), ask the user to try again."
 
+
 @passed(outputsNumbers, timeout=90, hide=False)
 def isListSorted():
     """Checks if the output list of primes is sorted"""
     # This test checks if the output list of prime numbers is sorted in ascending order.
     actual = list(map(int, re.findall(r'\d+', outputOf(stdinArgs=[100]))))
     assert actual == sorted(actual), "The list of prime numbers should be sorted in ascending order."
+
 
 @passed(outputsNumbers, timeout=90, hide=False)
 def correctList10():
@@ -46,7 +55,7 @@ def correctList11():
 	expected = [2, 3, 5, 7]
 	actual = list(map(int, re.findall(r'\d+', outputOf(stdinArgs=[11]))))
 	assert actual == expected
-
+        
 
 @passed(outputsNumbers, timeout=90, hide=False)
 def correctList100():

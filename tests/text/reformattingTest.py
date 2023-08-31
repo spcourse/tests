@@ -1,16 +1,25 @@
 from checkpy import *
 
+import ast
+
 only("reformatting.py")
 
+@test()
+def noBreakAndImport():
+    """the program does not use break or import statements"""
+    assert ast.Import not in static.AbstractSyntaxTree(), "you cannot use import statements"
+    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
+
    
-text_to_lines = (declarative
+correct_def_text_to_lines = (declarative
                  .function("text_to_lines")
                  .params("text", "max_length")
                  .returnType(str)
+                 .description("function is defined correctly")
                  )
 
-testDef = test()(text_to_lines
-                 .description("Function is defined correctly")
+text_to_lines = (declarative
+                 .function("text_to_lines")
                  )
 
 testT1 = "Hello, my name is Bob. And I like to fish!  "
@@ -22,7 +31,7 @@ correctOutputT1 = "Hello, my\nname is\nBob. And I\nlike to\nfish!  "
 correctSpaces = test()(text_to_lines
                        .call(testT1, max_lengthT1)
                        .returns(correctOutputT1)
-                       .description("Function handles spaces at the end of the text correctly")
+                       .description("function handles spaces at the end of the text correctly")
                        )
 
 testT2 = "Cat Cat Cat"
@@ -34,7 +43,7 @@ correctOutputT2 = "Cat Cat\nCat"
 correctFirstWord = test()(text_to_lines
                        .call(testT2, max_lengthT2)
                        .returns(correctOutputT2)
-                       .description("Function handles the first word correctly")
+                       .description("function handles the first word correctly")
                        )
 
 testT3 = "Will do"
@@ -45,7 +54,7 @@ correctOutputT3 = "Will\ndo"
 correctSpaceInclusionInLineLength = test()(text_to_lines
                                            .call(testT3, max_lengthT3)
                                            .returns(correctOutputT3)
-                                           .description("Function includes spaces in the line length calculation")
+                                           .description("function includes spaces in the line length calculation")
                                            )
 
 
@@ -57,7 +66,7 @@ correctOutputT4 = "Will do\njust\nfine"
 correctLineSplitConsideringSpaces = test()(text_to_lines
                                            .call(testT4, max_lengthT4)
                                            .returns(correctOutputT4)
-                                           .description("Function splits lines considering spaces and does not leave out single words")
+                                           .description("function splits lines considering spaces and does not leave out single words")
                                            )
 
 # The function should ignore trailing and leading spaces in the input text while splitting the text into lines.
@@ -69,7 +78,7 @@ correctOutputT5 = "       This is a\nsignificantly longer\nsentence with more\ns
 correctTextWithSpaces = test()(text_to_lines
                                    .call(testT5, max_lengthT5)
                                    .returns(correctOutputT5)
-                                   .description("Function works with a text with substantial trailing and leading spaces")
+                                   .description("function works with a text with substantial trailing and leading spaces")
                                    )
 
 # The function should handle multiple spaces between words and consider only a single space while splitting the text into lines.
@@ -81,7 +90,7 @@ correctOutputT6 = "The  quick  \nbrown    fox  \njumps   over   \nthe     lazy  
 correctHandlingOfMultipleSpaces = test()(text_to_lines
                                          .call(testT6, max_lengthT6)
                                          .returns(correctOutputT6)
-                                         .description("Function handles multiple spaces between words and considers only a single space while splitting the text into lines")
+                                         .description("function handles multiple spaces between words and considers only a single space while splitting the text into lines")
                                          )
 
 # When the input text contains a single word, the function should return the word as is, regardless of the max_length.
@@ -93,7 +102,7 @@ correctOutputT7 = "Supercalifragilisticexpialidocious"
 correctHandlingOfSingleWord = test()(text_to_lines
                                          .call(testT7, max_lengthT7)
                                          .returns(correctOutputT7)
-                                         .description("Function returns the single word as is, regardless of the max_length")
+                                         .description("function returns the single word as is, regardless of the max_length")
                                          )
 
 # When the input text is empty, the function should return an empty string.
@@ -106,48 +115,57 @@ correctOutputT8 = ""
 correctHandlingOfEmptyInput = test()(text_to_lines
                                      .call(testT8, max_lengthT8)
                                      .returns(correctOutputT8)
-                                     .description("Function returns an empty string when the input text is empty")
+                                     .description("function returns an empty string when the input text is empty")
                                      )
 
-testT9 = """He proposed in the dunes, they were wed by the sea, Their nine-day-long honeymoon was on the isle of Capri. For their supper they had one specatular dish- a simmering stew of mollusks and fish. And while he savored the broth, her bride's heart made a wish. That wish came true-she gave birth to a baby. But was this little one human Well, maybe. Ten fingers, ten toes, he had plumbing and sight. He could hear, he could feel, but normal? Not quite. This unnatural birth, this canker, this blight, was the start and the end and the sum of their plight. She railed at the doctor: "He cannot be mine. He smells of the ocean, of seaweed and brine." "You should count yourself lucky, for only last week, I treated a girl with three ears and a beak. That your son is half oyster you cannot blame me. ... have you ever considered, by chance, a small home by the sea?" Not knowing what to name him, they just called him Sam, or sometimes, "that thing that looks like a clam" Everyone wondered, but no one could tell, When would young Oyster Boy come out of his shell? When the Thompson quadruplets espied him one day, they called him a bivalve and ran quickly away. One spring afternoon, Sam was left in the rain. At the southwestern corner of Seaview and Main, he watched the rain water as it swirled down the drain. His mom on the freeway in the breakdown lane was pouding the dashboard- she couldn't contain the ever-rising grief, frustration, and pain. "Really, sweetheart," she said "I don't mean to make fun, but something smells fishy and I think it's our son. I don't like to say this, but it must be said, you're blaming our son for your problems in bed." He tried salves, he tried ointments that turned everything red. He tried potions and lotions and tincture of lead. He ached and he itched and he twitched and he bled. The doctor diagnosed, "I can't quite be sure, but the cause of the problem may also be the cure. They say oysters improve your sexual powers. Perhaps eating your son would help you do it for hours!" He came on tiptoe, he came on the sly, sweat on his forehead, and on his lips-a lie. "Son, are you happy? I don't mean to pry, but do you dream of Heaven? Have you ever wanted to die? Sam blinked his eye twice. but made no reply. Dad fingered his knife and loosened his tie. As he picked up his son, Sam dripped on his coat. With the shell to his lips, Sam slipped down his throat. They burried him quickly in the sand by the sea -sighed a prayer, wept a tear- and they were back home by three. A cross of greay driftwood marked Oyster Boy's grave. Words writ in the sand promised Jesus would save. But his memory was lost with one high-tide wave."""
+testT9 = """Alice was beginning to get very tired of sitting by her sister on the bank, and of having nothing to do: once or twice she had peeped into the book her sister was reading, but it had no pictures or conversations in it, `and what is the use of a book,' thought Alice `without pictures or conversation?' So she was considering in her own mind (as well as she could, for the hot day made her feel very sleepy and stupid), whether the pleasure of making a daisy-chain would be worth the trouble of getting up and picking the daisies, when suddenly a White Rabbit with pink eyes ran close by her. There was nothing so VERY remarkable in that; nor did Alice think it so VERY much out of the way to hear the Rabbit say to itself, `Oh dear! Oh dear! I shall be late!' (when she thought it over afterwards, it occurred to her that she ought to have wondered at this, but at the time it all seemed quite natural); but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT- POCKET, and looked at it, and then hurried on, Alice started to her feet, for it flashed across her mind that she had never before seen a rabbit with either a waistcoat-pocket, or a watch to take out of it, and burning with curiosity, she ran across the field after it, and fortunately was just in time to see it pop down a large rabbit-hole under the hedge. In another moment down went Alice after it, never once considering how in the world she was to get out again. The rabbit-hole went straight on like a tunnel for some way, and then dipped suddenly down, so suddenly that Alice had not a moment to think about stopping herself before she found herself falling down a very deep well. Either the well was very deep, or she fell very slowly, for she had plenty of time as she went down to look about her and to wonder what was going to happen next. First, she tried to look down and make out what she was coming to, but it was too dark to see anything; then she looked at the sides of the well, and noticed that they were filled with cupboards and book-shelves; here and there she saw maps and pictures hung upon pegs. She took down a jar from one of the shelves as she passed; it was labelled `ORANGE MARMALADE', but to her great disappointment it was empty: she did not like to drop the jar for fear of killing somebody, so managed to put it into one of the cupboards as she fell past it. `Well!' thought Alice to herself, `after such a fall as this, I shall think nothing of tumbling down stairs! How brave they'll all think me at home! Why, I wouldn't say anything about it, even if I fell off the top of the house!' (Which was very likely true.) Down, down, down. Would the fall NEVER come to an end! `I wonder how many miles I've fallen by this time?' she said aloud. `I must be getting somewhere near the centre of the earth. Let me see: that would be four thousand miles down, I think--' (for, you see, Alice had learnt several things of this sort in her lessons in the schoolroom, and though this was not a VERY good opportunity for showing off her knowledge, as there was no one to listen to her, still it was good practice to say it over) `--yes, that's about the right distance--but then I wonder what Latitude or Longitude I've got to?' (Alice had no idea what Latitude was, or Longitude either, but thought they were nice grand words to say.)"""
 max_lengthT9 = 77
 
-correctOutputT9 = """He proposed in the dunes, they were wed by the sea, Their nine-day-long
-honeymoon was on the isle of Capri. For their supper they had one specatular
-dish- a simmering stew of mollusks and fish. And while he savored the broth,
-her bride's heart made a wish. That wish came true-she gave birth to a baby.
-But was this little one human Well, maybe. Ten fingers, ten toes, he had
-plumbing and sight. He could hear, he could feel, but normal? Not quite. This
-unnatural birth, this canker, this blight, was the start and the end and the
-sum of their plight. She railed at the doctor: "He cannot be mine. He smells
-of the ocean, of seaweed and brine." "You should count yourself lucky, for
-only last week, I treated a girl with three ears and a beak. That your son is
-half oyster you cannot blame me. ... have you ever considered, by chance, a
-small home by the sea?" Not knowing what to name him, they just called him
-Sam, or sometimes, "that thing that looks like a clam" Everyone wondered, but
-no one could tell, When would young Oyster Boy come out of his shell? When
-the Thompson quadruplets espied him one day, they called him a bivalve and
-ran quickly away. One spring afternoon, Sam was left in the rain. At the
-southwestern corner of Seaview and Main, he watched the rain water as it
-swirled down the drain. His mom on the freeway in the breakdown lane was
-pouding the dashboard- she couldn't contain the ever-rising grief,
-frustration, and pain. "Really, sweetheart," she said "I don't mean to make
-fun, but something smells fishy and I think it's our son. I don't like to say
-this, but it must be said, you're blaming our son for your problems in bed."
-He tried salves, he tried ointments that turned everything red. He tried
-potions and lotions and tincture of lead. He ached and he itched and he
-twitched and he bled. The doctor diagnosed, "I can't quite be sure, but the
-cause of the problem may also be the cure. They say oysters improve your
-sexual powers. Perhaps eating your son would help you do it for hours!" He
-came on tiptoe, he came on the sly, sweat on his forehead, and on his lips-a
-lie. "Son, are you happy? I don't mean to pry, but do you dream of Heaven?
-Have you ever wanted to die? Sam blinked his eye twice. but made no reply.
-Dad fingered his knife and loosened his tie. As he picked up his son, Sam
-dripped on his coat. With the shell to his lips, Sam slipped down his throat.
-They burried him quickly in the sand by the sea -sighed a prayer, wept a
-tear- and they were back home by three. A cross of greay driftwood marked
-Oyster Boy's grave. Words writ in the sand promised Jesus would save. But his
-memory was lost with one high-tide wave."""
+correctOutputT9 = """Alice was beginning to get very tired of sitting by her sister on the bank,
+and of having nothing to do: once or twice she had peeped into the book her
+sister was reading, but it had no pictures or conversations in it, `and what
+is the use of a book,' thought Alice `without pictures or conversation?' So
+she was considering in her own mind (as well as she could, for the hot day
+made her feel very sleepy and stupid), whether the pleasure of making a
+daisy-chain would be worth the trouble of getting up and picking the daisies,
+when suddenly a White Rabbit with pink eyes ran close by her. There was
+nothing so VERY remarkable in that; nor did Alice think it so VERY much out
+of the way to hear the Rabbit say to itself, `Oh dear! Oh dear! I shall be
+late!' (when she thought it over afterwards, it occurred to her that she
+ought to have wondered at this, but at the time it all seemed quite natural);
+but when the Rabbit actually TOOK A WATCH OUT OF ITS WAISTCOAT- POCKET, and
+looked at it, and then hurried on, Alice started to her feet, for it flashed
+across her mind that she had never before seen a rabbit with either a
+waistcoat-pocket, or a watch to take out of it, and burning with curiosity,
+she ran across the field after it, and fortunately was just in time to see it
+pop down a large rabbit-hole under the hedge. In another moment down went
+Alice after it, never once considering how in the world she was to get out
+again. The rabbit-hole went straight on like a tunnel for some way, and then
+dipped suddenly down, so suddenly that Alice had not a moment to think about
+stopping herself before she found herself falling down a very deep well.
+Either the well was very deep, or she fell very slowly, for she had plenty of
+time as she went down to look about her and to wonder what was going to
+happen next. First, she tried to look down and make out what she was coming
+to, but it was too dark to see anything; then she looked at the sides of the
+well, and noticed that they were filled with cupboards and book-shelves; here
+and there she saw maps and pictures hung upon pegs. She took down a jar from
+one of the shelves as she passed; it was labelled `ORANGE MARMALADE', but to
+her great disappointment it was empty: she did not like to drop the jar for
+fear of killing somebody, so managed to put it into one of the cupboards as
+she fell past it. `Well!' thought Alice to herself, `after such a fall as
+this, I shall think nothing of tumbling down stairs! How brave they'll all
+think me at home! Why, I wouldn't say anything about it, even if I fell off
+the top of the house!' (Which was very likely true.) Down, down, down. Would
+the fall NEVER come to an end! `I wonder how many miles I've fallen by this
+time?' she said aloud. `I must be getting somewhere near the centre of the
+earth. Let me see: that would be four thousand miles down, I think--' (for,
+you see, Alice had learnt several things of this sort in her lessons in the
+schoolroom, and though this was not a VERY good opportunity for showing off
+her knowledge, as there was no one to listen to her, still it was good
+practice to say it over) `--yes, that's about the right distance--but then I
+wonder what Latitude or Longitude I've got to?' (Alice had no idea what
+Latitude was, or Longitude either, but thought they were nice grand words to
+say.)"""
 
 correctLongText = test()(text_to_lines
                         .call(testT9, max_lengthT9)

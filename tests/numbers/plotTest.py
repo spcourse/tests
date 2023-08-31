@@ -1,12 +1,21 @@
-import numpy as np
 from checkpy import *
+
+import ast
+import re
+
+import numpy as np
 
 only("plot.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
+@test()
+def noBreak():
+    """the program does not use break statements"""
+    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
 
-@test(timeout=90)
+
+@passed(noBreak, timeout=90, hide=False)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"
@@ -41,7 +50,7 @@ def correctYValues():
     assert len(y_values) == 400, "The length of y_values seems incorrect. Make sure you calculate y_values for each x_value."
     
     for x, y in zip(x_values, y_values):
-        expected_y = 12.38 * x**4 - 84.38 * x**3 + 165.19 * x**2 - 103.05 * x + 0
+        expected_y = 12.38 * x**4 - 84.38 * x**3 + 165.19 * x**2 - 103.05 * x
         assert approx(y, abs=0.005) == expected_y, f"For x = {x}, expected y = {expected_y}, but got {y}. Check your polynomial calculation."
         
 
