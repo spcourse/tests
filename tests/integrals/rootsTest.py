@@ -1,25 +1,40 @@
 from checkpy import *
 
+import typing
+
 only("roots.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
-@test()
-def hasNulpunten():
-    """defines the function roots()"""
-    assert "roots" in static.getFunctionDefinitions()
+correct_def_roots = test()(declarative
+    .function("roots")
+    .returnType(typing.List[float])
+    .params("a", "b", "c")
+    .call(1, 2, -10)
+    .description("correctly defines the roots() function")
+)
 
-@passed(hasNulpunten, hide=False)
-def returnTypeIsList():
-    """roots() returns a list"""
-    assert type(getFunction("roots")(1, 2, -10)) is list
+roots = (declarative.function("roots"))
 
-@passed(returnTypeIsList, hide=False)
-def correct():
+@passed(correct_def_roots, hide=False)
+def correctTwoRoots():
     """roots() yields the two correct roots for a=1, b=2, c=-10"""
-    assert sorted(int(p * 10) / 10 for p in getFunction("roots")(1, 2, -10)) == [-4.3, 2.3]
+    roots.call(1, 2, -10).returns([-4.3166247903554, 2.3166247903554])()
 
-@passed(returnTypeIsList, hide=False)
+
+@passed(correct_def_roots, hide=False)
+def correctRoot():
+    """roots() yields the same correct roots for a=1, b=4, c=4"""
+    roots.call(1, 4, 4).returns([-2.0, -2.0])()
+
+
+@passed(correct_def_roots, hide=False)
 def correctNone():
     """roots() yields no roots for a=3, b=6, c=9"""
-    assert getFunction("roots")(3, 6, 9) == []
+    roots.call(3, 6, 9).returns([])()
+
+
+@test()
+def showsGraph():
+	"""either saves a graph into a file, or shows a graph on the screen."""
+	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"

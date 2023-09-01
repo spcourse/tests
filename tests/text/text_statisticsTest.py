@@ -21,7 +21,8 @@ correct_def_number_of_letters_in = test()(declarative
     .function("number_of_letters_in")
     .params("text")
     .returnType(int)
-    .description("correctly defined the function number_of_letters_in")
+    .call("Test sentence")
+    .description("correctly defines the number_of_letters_in() function")
 )
 
 
@@ -29,7 +30,8 @@ correct_def_number_of_words_in = test()(declarative
     .function("number_of_words_in")
     .params("text")
     .returnType(int)
-    .description("correctly defined the function number_of_words_in")
+    .call("Test sentence")
+    .description("correctly defines the number_of_words_in() function")
 )
 
 
@@ -37,45 +39,39 @@ correct_def_number_of_sentences_in = test()(declarative
     .function("number_of_sentences_in")
     .params("text")
     .returnType(int)
-    .description("correctly defined the function number_of_sentences_in")
+    .call("Test sentence")
+    .description("correctly defines the number_of_sentences_in() function")
 )
 
 
-correct_def_avarage_word_length = test()(declarative
+correct_def_average_word_length = test()(declarative
     .function("average_word_length")
     .params("text")
     .returnType(float)
-    .description("correctly defined the function average_word_length")
+    .call("Test sentence")
+    .description("correctly defines the average_word_length() function")
 )
 
 
-correct_number_of_letters_in = test()(declarative
-    .function("number_of_letters_in")
-    .call("Stick Boy liked Match Girl, he liked her a lot")
-    .returns(36)
-    .description("correctly counts the number of letters in a text")
-)
+@passed(correct_def_number_of_letters_in, hide=False)
+def correctNumberOfLetters():
+    """function works correctly for counting letters"""
+    declarative.function("number_of_letters_in").call("Stick Boy liked Match Girl, he liked her a lot").returns(36)()
 
 
-correct_number_of_words_in = test()(declarative
-    .function("number_of_words_in")
-    .call("He liked her cute figure, he thought she was hot.")
-    .returns(10)
-    .description("correctly counts the number of words in a text")
-)
+@passed(correct_def_number_of_words_in, hide=False)
+def correctNumberOfWords():
+    """function works correctly for counting words"""
+    declarative.function("number_of_words_in").call("He liked her cute figure, he thought she was hot.").returns(10)()
 
 
-correct_number_of_sentences_in = test()(declarative
-    .function("number_of_sentences_in")
-    .call("But could a flame. ever burn. for a match and a stick.")
-    .returns(3)
-    .description("correctly counts the number of sentences in a text")
-)
+@passed(correct_def_number_of_sentences_in, hide=False)
+def correctNumberOfSentences():
+    """function works correctly for counting sentences"""
+    declarative.function("number_of_sentences_in").call("But could a flame. ever burn. for a match and a stick.").returns(3)()
 
 
-correct_avarage_word_length = test()(declarative
-    .function("average_word_length")
-    .call("It did quite literally; he burned up pretty quick.")
-    .returns(40 / 9)
-    .description("correctly calculates the average word length in a text")
-)
+@passed(correct_def_average_word_length, hide=False)
+def correctAverageWordLength():
+    """function works correctly for calculating average word length"""
+    declarative.function("average_word_length").call("It did quite literally; he burned up pretty quick.").returns(40 / 9)()
