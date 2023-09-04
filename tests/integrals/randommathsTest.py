@@ -12,7 +12,11 @@ correct_def_random_math = test()(declarative
     .description("correctly defines the random_math() function")
 )
 
-@test()
-def correctAmount(test):
+
+random_math = (declarative.function("random_math"))
+
+
+@passed(correct_def_random_math, hide=False)
+def correctAnswer():
 	"""randommaths.py prints the correct answer (does the number ring familiar?)"""
-	assert approx(math.e, abs=0.0027) in static.getNumbersFrom(outputOf())
+	random_math.call().returns(approx(math.e, abs=0.0027))()
