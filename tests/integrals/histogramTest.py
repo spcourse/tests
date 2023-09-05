@@ -11,7 +11,9 @@ correct_def_sum_random_numbers = test()(declarative
     .description("correctly defines the sum_random_numbers() function")
 )
 
+
 sum_random_numbers = (declarative.function("sum_random_numbers"))
+
 
 @passed(correct_def_sum_random_numbers, hide=False)
 def correctBelow40():
@@ -23,6 +25,7 @@ def correctBelow40():
         "make sure you output a sentence containing the answer on the first line of output"
 
     assert '40' in firstLine or 'veertig' in firstLine or 'forty' in firstLine
+
 
 @passed(correct_def_sum_random_numbers, hide=False)
 def correctAbove60():
@@ -39,7 +42,7 @@ def correctAbove60():
     assert '60' in secondLine or 'zestig' in secondLine or 'sixty' in secondLine
 
 
-@test()
+@passed(correct_def_sum_random_numbers, hide=False)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"

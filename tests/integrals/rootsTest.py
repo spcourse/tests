@@ -14,7 +14,16 @@ correct_def_roots = test()(declarative
     .description("correctly defines the roots() function")
 )
 
+
+correct_def_plot_roots = test()(declarative
+    .function("plot_roots")
+    .params("a", "b", "c")
+    .description("correctly defines the plot_roots() function")
+)
+
+
 roots = (declarative.function("roots"))
+
 
 @passed(correct_def_roots, hide=False)
 def correctTwoRoots():
@@ -34,7 +43,7 @@ def correctNone():
     roots.call(3, 6, 9).returns([])()
 
 
-@test()
+@passed(correct_def_plot_roots, hide=False)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"

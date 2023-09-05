@@ -48,7 +48,7 @@ def correctFunc4():
 	riemann.call(-1, 4, 15, -2, 3, 10).returns(approx(73.5, abs=0.5))()
 
 
-@test()
+@passed(correct_def_plot_riemann, hide=False)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"

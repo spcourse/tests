@@ -15,6 +15,13 @@ correct_def_montecarlo = test()(declarative
 )
 
 
+correct_def_plot_montecarlo = test()(declarative
+    .function("plot_montecarlo")
+    .params("func", "x1", "y1", "x2", "y2")
+    .description("correctly defines the plot_montecarlo() function")
+)
+
+
 montecarlo = (declarative.function("montecarlo"))
 
 
@@ -48,7 +55,7 @@ def correctFunc3():
     montecarlo.call(squaredSin, 0, -1, math.pi, 1).returns(approx(0.77, abs=0.02))()
 
 
-@test()
+@passed(correct_def_plot_montecarlo, hide=False)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"
