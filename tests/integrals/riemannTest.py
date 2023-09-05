@@ -33,7 +33,6 @@ def correctFunc1():
 def correctFunc2():
 	"""riemann() yields the correct value when an interval does not start at x=0"""
 	riemann.call(1, 0, 0, -2, -1, 1000).returns(approx(2.335, abs=0.005))()
-	assert getFunction("riemann")(1, 0, 0, -2, -1, 1000) == approx(2.335, abs=0.005)
 
 
 @passed(correct_def_riemann, hide=False)
