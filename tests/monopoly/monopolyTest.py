@@ -38,38 +38,38 @@ def hassimulate_monopolyAndsimulate_monopoly_games():
 
 @passed(hassimulate_monopolyAndsimulate_monopoly_games, timeout=120, hide=False)
 def correctAverageTrump(test):
-	"""Monopoly works for Trump-mode"""
+	"""Monopoly works for Trump-mode (assuming player always throws 7)"""
 	monopoly = getModule()
 	nArguments = len(monopoly.simulate_monopoly_games.arguments)
 
 	assert nArguments in [1, 2],\
 		"Make sure that the function simulate_monopoly_games with Trumpmode accepts 1 argument and with starting_money 2 arguments"
 
-	with patch.object(monopoly, "throw_two_dice", Mock(return_value=3)):
+	with patch.object(monopoly, "throw_two_dice", Mock(return_value=7)):
 		# Trump
 		if nArguments == 1:
-			result = monopoly.simulate_monopoly_games(10000)
+			result = monopoly.simulate_monopoly_games(1)
 			test.success = "The code works without starting_money, you can now proceed with adding starting_money!"
 		# starting money, 1 player
 		else:
-			result = monopoly.simulate_monopoly_games(10000, 1000000)
+			result = monopoly.simulate_monopoly_games(1, 1000000)
 
 		assert result is not None,\
 			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
-		assert result == approx(147, abs=2)
+		assert result == approx(38, abs=1)
 
 
 @passed(hassimulate_monopolyAndsimulate_monopoly_games, timeout=120, hide=False)
 def correctAverageStartingMoney():
-	"""Monopoly works with 1500 euro starting_money"""
+	"""Monopoly works with 1500 euro starting_money (assuming player always throws 7)"""
 	monopoly = getModule()
 
 	assert len(monopoly.simulate_monopoly_games.arguments) == 2,\
 		"Did you implement starting money yet? If not, ignore this frowny."
 	
-	with patch.object(monopoly, "throw_two_dice", Mock(return_value=3)):
-		result = monopoly.simulate_monopoly_games(10000, 1500)
+	with patch.object(monopoly, "throw_two_dice", Mock(return_value=7)):
+		result = monopoly.simulate_monopoly_games(1, 1500)
 		assert result is not None,\
 			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
-		assert result == approx(186.5, abs=2.5)
+		assert result == approx(142, abs=1)
