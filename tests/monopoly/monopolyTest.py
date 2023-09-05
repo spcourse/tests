@@ -45,7 +45,7 @@ def correctAverageTrump(test):
 	assert nArguments in [1, 2],\
 		"Make sure that the function simulate_monopoly_games with Trumpmode accepts 1 argument and with starting_money 2 arguments"
 
-	with patch.object(monopoly, "throw_two_dice", Mock(return_value=3)):
+	with patch.object(monopoly, "throw_two_dice", Mock(return_value=7)):
 		# Trump
 		if nArguments == 1:
 			result = monopoly.simulate_monopoly_games(10000)
