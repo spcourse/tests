@@ -22,7 +22,7 @@ def correctBelow40():
     numbers = static.getNumbersFrom(firstLine)
 
     assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
-        "make sure you output a sentence containing the answer on the first line of output"
+        "make sure your program outputs a sentence containing the percentage on the first line of the output"
 
     assert '40' in firstLine or 'veertig' in firstLine or 'forty' in firstLine
 
@@ -37,7 +37,7 @@ def correctAbove60():
     numbers = static.getNumbersFrom(secondLine)
 
     assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
-        "make sure you output a sentence containing the answer on the first line of output"
+        "make sure your program outputs a sentence containing the percentage on the second line of the output"
 
     assert '60' in secondLine or 'zestig' in secondLine or 'sixty' in secondLine
 
