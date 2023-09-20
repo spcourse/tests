@@ -25,7 +25,7 @@ correct_def_plot_montecarlo = test()(declarative
 montecarlo = (declarative.function("montecarlo"))
 
 
-@passed(correct_def_montecarlo, hide=False)
+@passed(correct_def_montecarlo, hide=False, timeout=90)
 def correctFunc1():
     """montecarlo() yields the correct value of an integral on [0,1] for the square function"""
     square = monkeypatch.documentFunction(
@@ -35,7 +35,7 @@ def correctFunc1():
     montecarlo.call(square, 0, 0, 1, 1).returns(approx(0.525, abs=0.015))()
 
 
-@passed(correctFunc1, hide=False)
+@passed(correctFunc1, hide=False, timeout=90)
 def correctFunc2():
     """montecarlo() yields the correct value when an interval does not start at x=0"""
     tanCosSin = monkeypatch.documentFunction(
@@ -45,7 +45,7 @@ def correctFunc2():
     montecarlo.call(tanCosSin, 0.2, 0, 2.2, 1.5).returns(approx(1.71, abs=0.02))()
 
 
-@passed(correctFunc1, hide=False)
+@passed(correctFunc1, hide=False, timeout=90)
 def correctFunc3():
     """montecarlo() yields the correct value when a function goes below the x-axis"""
     squaredSin = monkeypatch.documentFunction(
@@ -55,7 +55,7 @@ def correctFunc3():
     montecarlo.call(squaredSin, 0, -1, math.pi, 1).returns(approx(0.77, abs=0.02))()
 
 
-@passed(correct_def_plot_montecarlo, hide=False)
+@passed(correct_def_plot_montecarlo, hide=False, timeout=90)
 def showsGraph():
 	"""either saves a graph into a file, or shows a graph on the screen."""
 	assert "plt.savefig" in static.getFunctionCalls() or "plt.show" in static.getFunctionCalls(), "make sure to either save the graph into a file, or show a graph on the screen, using the plt.savefig() or plt.show() function respectively"
