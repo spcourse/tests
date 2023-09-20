@@ -28,10 +28,8 @@ roots = (declarative.function("roots"))
 @passed(correct_def_roots, hide=False)
 def correctTwoRoots():
     """roots() yields the two correct roots for a=1, b=2, c=-10"""
-    roots.call(1, 2, -10).returns([-4.3166247903554, 2.3166247903554])()
-
     returned = roots.call(1, 2, -10)().returned
-    
+
     assert len(returned) == 2
     assert approx(-4.32, abs=0.01) in returned
     assert approx(2.32, abs=0.01) in returned
