@@ -30,7 +30,8 @@ def hassimulate_monopoly_games():
 
 @passed(hassimulate_monopoly_games, timeout=90, hide=False)
 def correctAverageDiff1():
-	"""Players only throw the value 3; Player 1 and Player 2 both start with 1500; simulate_monopoly_games gives the correct output"""
+	"""Simulate_monopoly_games gives the correct output
+   (dice always yield 3; start money: 1500, 1500)"""
 	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
 		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1500)
 
@@ -47,7 +48,8 @@ def correctAverageDiff1():
 
 @passed(hassimulate_monopoly_games, timeout=90, hide=False)
 def correctAverageDiff2():
-	"""Players only throw the value 3; Player 1 starts with 1500 and Player 2 starts with 1700; simulate_monopoly_games gives the correct output"""
+	"""Simulate_monopoly_games gives the correct output
+   (dice always yield 3; start money: 1500, 1700)"""
 	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
 		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1700)
 
@@ -62,27 +64,25 @@ def correctAverageDiff2():
 		assert 4.0 == outcome
 
 @passed(hassimulate_monopoly_games, timeout=90, hide=False)
-def correctAverageDiff2():
-	"""Players only throw the value 3; Player 1 starts with 1500 and Player 2 starts with 1700; simulate_monopoly_games gives the correct output"""
+def correctAverageDiff3():
+	"""Simulate_monopoly_games gives the correct output
+   (dice always yield 3; start money: 1500, 2500)"""
 	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
-		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1700)
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 2500)
 
 		assert Type(float) == outcome,\
 			"Make sure that the function simulate_monopoly_games only returns"\
 			" the difference in the number of streets owned"
 
-		assert 0 < outcome,\
-			"Are you sure you are subtracting player 2s values from player 1"\
-			" and not the other way around?"
-
-		assert 4.0 == outcome
+		assert 0.0 == outcome
 
 
 @passed(hassimulate_monopoly_games, timeout=90, hide=False)
-def correctAverageDiff2():
-	"""Players only throw the value 7; Player 1 starts with 1500 and Player 2 starts with 2200; simulate_monopoly_games gives the correct output"""
+def correctAverageDiff4():
+	"""Simulate_monopoly_games gives the correct output
+   (dice always yield 7; start money: 1500, 2500)"""
 	with patch.object(getModule(), "throw_two_dice", Mock(return_value=7)):
-		outcome = getFunction("simulate_monopoly_games")(1, 1500, 2200)
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 2500)
 
 		assert Type(float) == outcome,\
 			"Make sure that the function simulate_monopoly_games only returns"\
