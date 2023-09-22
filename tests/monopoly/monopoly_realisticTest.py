@@ -1,6 +1,7 @@
 import ast
 
 from checkpy import *
+from unittest.mock import patch, Mock
 
 
 only("monopoly_realistic.py")
@@ -28,41 +29,67 @@ def hassimulate_monopoly_games():
 
 
 @passed(hassimulate_monopoly_games, timeout=90, hide=False)
-def correctAverageDiff():
-	"""Monopoly with two players gives the correct average difference in owned streets"""
-	outcome = getFunction("simulate_monopoly_games")(10000, 1500, 1500)
+def correctAverageDiff1():
+	"""Players only throw the value 3; Player 1 and Player 2 both start with 1500; simulate_monopoly_games gives the correct output"""
+	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1500)
 
-	assert Type(float) == outcome,\
-		"Make sure that the function simulate_monopoly_games only returns"\
-		" the difference in the number of streets owned"
+		assert Type(float) == outcome,\
+			"Make sure that the function simulate_monopoly_games only returns"\
+			" the difference in the number of streets owned"
 
-	assert outcome > 0,\
-		"Are you sure you are subtracting player 2s values from player 1"\
-		" and not the other way around?"
+		assert 0 < outcome,\
+			"Are you sure you are subtracting player 2s values from player 1"\
+			" and not the other way around?"
 
-	assert outcome == approx(.35, abs=0.2)
+		assert 6.0 == outcome
 
 
-@passed(correctAverageDiff, timeout=90, hide=False)
+@passed(hassimulate_monopoly_games, timeout=90, hide=False)
 def correctAverageDiff2():
-	"""Monopoly with two players finds the correct amount of extra starting money for player 2"""
-	def findline(text: str) -> str:
-		tsts = ['starting', 'money', 'equal', 'number', 'streets']
-		for line in text.split("\n"):
-			if all(tst in line for tst in tsts):
-				return line
-		return ""
+	"""Players only throw the value 3; Player 1 starts with 1500 and Player 2 starts with 1700; simulate_monopoly_games gives the correct output"""
+	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1700)
 
-	output = outputOf(overwriteAttributes=[("__name__", "__main__")])
-	line = findline(output)
+		assert Type(float) == outcome,\
+			"Make sure that the function simulate_monopoly_games only returns"\
+			" the difference in the number of streets owned"
 
-	if not line:
-		raise AssertionError("Check the assignment for the correct output format of the solution.")
+		assert 0 < outcome,\
+			"Are you sure you are subtracting player 2s values from player 1"\
+			" and not the other way around?"
 
-	numbers = static.getNumbersFrom(line)
+		assert 4.0 == outcome
 
-	assert 0 in numbers or 50 in numbers or 100 in numbers or 150 in numbers or 200 in numbers,\
-		"The found value was not rounded to the nearest value of 50 euros."
+@passed(hassimulate_monopoly_games, timeout=90, hide=False)
+def correctAverageDiff2():
+	"""Players only throw the value 3; Player 1 starts with 1500 and Player 2 starts with 1700; simulate_monopoly_games gives the correct output"""
+	with patch.object(getModule(), "throw_two_dice", Mock(return_value=3)):
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 1700)
 
-	assert 100 in numbers or 150 in numbers,\
-		"Properly rounded to the nearest value, but the value returned was incorrect."
+		assert Type(float) == outcome,\
+			"Make sure that the function simulate_monopoly_games only returns"\
+			" the difference in the number of streets owned"
+
+		assert 0 < outcome,\
+			"Are you sure you are subtracting player 2s values from player 1"\
+			" and not the other way around?"
+
+		assert 4.0 == outcome
+
+
+@passed(hassimulate_monopoly_games, timeout=90, hide=False)
+def correctAverageDiff2():
+	"""Players only throw the value 7; Player 1 starts with 1500 and Player 2 starts with 2200; simulate_monopoly_games gives the correct output"""
+	with patch.object(getModule(), "throw_two_dice", Mock(return_value=7)):
+		outcome = getFunction("simulate_monopoly_games")(1, 1500, 2200)
+
+		assert Type(float) == outcome,\
+			"Make sure that the function simulate_monopoly_games only returns"\
+			" the difference in the number of streets owned"
+
+		assert 0 < outcome,\
+			"Are you sure you are subtracting player 2s values from player 1"\
+			" and not the other way around?"
+
+		assert 4.0 == outcome
