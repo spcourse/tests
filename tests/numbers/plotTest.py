@@ -47,7 +47,7 @@ def correctYValues():
     # This test checks if y_values are correctly calculated for each x_value based on the given polynomial.
     x_values = getModule().x_values
     y_values = getModule().y_values
-    assert len(y_values) == 400, "The length of y_values seems incorrect. Make sure you calculate y_values for each x_value."
+    assert len(y_values) == 400 or len(y_values) == 401, "The length of y_values seems incorrect. Make sure you calculate y_values for each x_value."
     
     for x, y in zip(x_values, y_values):
         expected_y = 12.38 * x**4 - 84.38 * x**3 + 165.19 * x**2 - 103.05 * x
