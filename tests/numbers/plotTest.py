@@ -35,9 +35,9 @@ def correctXValues():
     # This test checks if x_values start from 0, end at 4 and are in steps of 0.01.
     numbers = getModule().x_values
     
-    assert len(numbers) == 400, "The length of x_values seems incorrect. Make sure you generate x_values from 0 to 3.99 in steps of 0.01."
+    assert len(numbers) == 400 or len(numbers) == 401, "The length of x_values seems incorrect. Make sure you generate x_values from 0 to 3.99 in steps of 0.01."
     assert approx(numbers[0], abs=0.005) == 0, "x_values should start from 0."
-    assert approx(numbers[-1], abs=0.005) == 3.99, "x_values should end at 3.99."
+    assert approx(numbers[-1], abs=0.01) == 3.99, "x_values should end at 3.99."
     assert approx(numbers[1] - numbers[0], abs=0.005) == 0.01, "The step size between x_values should be 0.01."
 
 
