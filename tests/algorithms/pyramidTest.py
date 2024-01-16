@@ -44,7 +44,7 @@ def exactMario1():
 
     pyramid, regex = getPyramid(1)
     if regex.match(outputOf(stdinArgs=[1])) is None:
-        assert outputOf(stdinArgs=[1]) == pyramid
+        assert pyramid == outputOf(stdinArgs=[1])
 
 
 @passed(exactMario1, hide=False)
@@ -52,7 +52,7 @@ def exactMario3():
     """prints a well-formed pyramid of height 3"""
     pyramid, regex = getPyramid(3)
     if regex.match(outputOf(stdinArgs=[3])) is None:
-        assert outputOf(stdinArgs=[3]) == pyramid
+        assert pyramid == outputOf(stdinArgs=[3])
 
 
 @passed(exactMario3, hide=False)
@@ -60,7 +60,7 @@ def exactMario23():
     """prints a well-formed pyramid of height 23"""
     pyramid, regex = getPyramid(23)
     if regex.match(outputOf(stdinArgs=[23])) is None:
-        assert outputOf(stdinArgs=[23]) == pyramid
+        assert pyramid == outputOf(stdinArgs=[23])
 
 
 def getLine(i, height):
@@ -83,7 +83,7 @@ def getStringVars():
     for assignment in assignments:
         for target in assignment.targets:
             if isinstance(target, ast.Name):
-                if (isinstance(assignment.value, ast.Str) 
+                if (isinstance(assignment.value, ast.Str)
                     or (isinstance(assignment.value, ast.Name) and assignment.value.id in vars)):
                     vars.add(target.id)
     return vars

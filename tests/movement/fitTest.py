@@ -20,7 +20,7 @@ def correctC():
 @passed(containsRequiredFunctionDefinitions, hide=False)
 def correctUncertainy():
 	"""prints the uncertainty of c"""
-	assert outputOf().count("\n") >= 2, "expected fit.py to print at least two lines of output"
+	assert 2 < = outputOf().count("\n"), "expected fit.py to print at least two lines of output"
 
 	secondLine = outputOf().split("\n")[1]
 	assert approx(1.5, abs=0.1) in static.getNumbersFrom(secondLine)

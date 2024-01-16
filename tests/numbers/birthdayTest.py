@@ -16,11 +16,11 @@ def outputsYears():
 	assert ast.Break not in static.AbstractSyntaxTree()
 
 	result = outputOf(stdinArgs=[1])
-	assert result.count("\n") == 1, "Output should be on one line"
+	assert 1 == result.count("\n"), "Output should be on one line"
 
 	numbers = static.getNumbersFrom(result.split('\n')[0])
-	assert len(numbers) > 0, "No year found in the output"
-	
+	assert 0 < len(numbers), "No year found in the output"
+
 
 @passed(outputsYears, timeout=90, hide=False)
 def check1():

@@ -17,16 +17,16 @@ def validate_sim(input_params, expected_time, xl, tl):
     x_start, x_end = xl[0], xl[-1]
     t_start, t_end = tl[0], tl[-1]
 
-    if t_end == approx(expected_time, abs=0.2):
+    if approx(expected_time, abs=0.2) == t_end:
         return
 
-    assert x_start != approx(start_height, abs=0.1),\
+    assert approx(start_height, abs=0.1) != x_start,\
         "It looks like the simulation did not start at a height of 1000 meters."
-    
-    assert x_end != approx(end_height, abs=1),\
+
+    assert approx(end_height, abs=1) != x_end,\
         "It looks like the simulation did not stop at a height of 200 meters."
-    
-    assert t_start != approx(0, abs=0.1),\
+
+    assert approx(0, abs=0.1) != t_start,\
         "It looks like the starting time of the simulation is not 0."
 
     raise AssertionError(f"Did not expect a total elapsed time of {tl[-1]} (with input {input_params})")

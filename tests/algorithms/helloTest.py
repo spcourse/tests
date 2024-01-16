@@ -5,9 +5,9 @@ only("hello.py")
 @test()
 def exactHello():
 	"""prints \"Hello, world!\""""
-	assert outputOf() == "Hello, world!\n"
+	assert "Hello, world!\n" == outputOf()
 
 @failed(exactHello)
 def oneLine():
 	"""prints exactly 1 line of output"""
-	assert outputOf().count("\n") == 1
+	assert 1 == outputOf().count("\n")

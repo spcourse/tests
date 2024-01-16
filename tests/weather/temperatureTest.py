@@ -83,7 +83,7 @@ def correctDateLongestFreezingp():
 def correctFirstHeatWave():
     """prints the first year that had a heatwave"""
     assertNotHardcoded("1911")
-    assert "1911" in outputOf(overwriteAttributes=[("__name__", "__main__")]) 
+    assert "1911" in outputOf(overwriteAttributes=[("__name__", "__main__")])
 
 
 @test()

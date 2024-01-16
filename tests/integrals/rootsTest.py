@@ -30,7 +30,7 @@ def correctTwoRoots():
     """roots() yields the two correct roots for a=1, b=2, c=-10"""
     returned = roots.call(1, 2, -10)().returned
 
-    assert len(returned) == 2
+    assert 2 == len(returned)
     assert approx(-4.32, abs=0.01) in returned
     assert approx(2.32, abs=0.01) in returned
 

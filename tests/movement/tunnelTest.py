@@ -9,22 +9,22 @@ monkeypatch.patchNumpy()
 def validate_sim(actual, expected):
     rl, vl, tl = actual
     assert len(rl) == len(vl) == len(tl), "Function is expected to return three lists of the same length."
-    assert len(rl) > 0, "Each returned list must contain at least one element."
+    assert 0 < len(rl), "Each returned list must contain at least one element."
 
     min_height, max_height, min_speed, max_speed = expected
     _min_height, _max_height, _min_speed, _max_speed = min(rl), max(rl), min(vl), max(vl)
 
     tol = max_height // 1000
-    assert _min_height == approx(min_height, abs=tol),\
+    assert approx(min_height, abs=tol) == _min_height,\
         f"Incorrect minimum distance (got {_min_height}, expected approximately {min_height})"
 
-    assert _max_height == approx(max_height, abs=tol),\
+    assert approx(max_height, abs=tol) == _max_height,\
         f"Incorrect maximum distance (got {_max_height}, expected approximately {max_height})"
 
-    assert _min_speed == approx(min_speed, abs=2),\
+    assert approx(min_speed, abs=2) ==_min_speed,\
         f"Incorrect minimum speed (got {_min_speed}, expected approximately {min_speed})"
 
-    assert _max_speed == approx(max_speed, abs=2),\
+    assert approx(max_speed, abs=2) == _max_speed,\
         f"Incorrect maximum speed (got {_max_speed}, expected approximately {max_speed})"
 
 

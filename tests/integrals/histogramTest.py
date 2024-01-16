@@ -31,7 +31,7 @@ def correctBelow40():
 def correctAbove60():
     """prints, on the second line, how often the sum is more than 60"""
     lines = outputOf().split("\n")
-    assert len(lines) > 1
+    assert 1 < len(lines)
     secondLine = lines[1]
 
     numbers = static.getNumbersFrom(secondLine)
