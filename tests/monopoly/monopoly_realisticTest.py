@@ -1,5 +1,3 @@
-import ast
-
 from checkpy import *
 from unittest.mock import patch, Mock
 
@@ -9,13 +7,8 @@ require("monopoly.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
-
-@test()
-def codeShieldedByMain():
-	"""if __name__ == "__main__" is present"""
-	assert ast.Break not in static.AbstractSyntaxTree()
-	assert 'if __name__ == "__main__":' in static.getSource()
-
+# shared tests
+from contains_main import *
 
 @passed(codeShieldedByMain, timeout=90, hide=False)
 def hassimulate_monopoly_games():

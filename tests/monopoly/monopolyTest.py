@@ -1,6 +1,4 @@
 from checkpy import *
-
-import ast
 from unittest.mock import patch, Mock
 
 
@@ -8,20 +6,14 @@ only("monopoly.py")
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
-
-@test()
-def codeShieldedByMain():
-	"""if __name__ == "__main__" is present"""
-	assert ast.Break not in static.AbstractSyntaxTree()
-	assert ('if __name__ == "__main__":' in static.removeComments(static.getSource())) or 
-	("if __name__ == '__main__':" in static.removeComments(static.getSource())), 'not found' 
-
+# shared test
+from contains_main import *
 
 @passed(codeShieldedByMain, hide=False)
 def hasthrow_two_dice():
 	"""defines the function throw_two_dice"""
 	assert "throw_two_dice" in static.getFunctionDefinitions()
-	
+
 
 @passed(hasthrow_two_dice, hide=False)
 def correctDice():
@@ -67,7 +59,7 @@ def correctAverageStartingMoney():
 
 	assert len(monopoly.simulate_monopoly_games.arguments) == 2,\
 		"Did you implement starting money yet? If not, ignore this frowny."
-	
+
 	with patch.object(monopoly, "throw_two_dice", Mock(return_value=7)):
 		result = monopoly.simulate_monopoly_games(1, 1500)
 		assert result is not None,\
