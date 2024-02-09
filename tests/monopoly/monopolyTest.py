@@ -13,7 +13,8 @@ monkeypatch.patchNumpy()
 def codeShieldedByMain():
 	"""if __name__ == "__main__" is present"""
 	assert ast.Break not in static.AbstractSyntaxTree()
-	assert 'if __name__ == "__main__":' in static.removeComments(static.getSource())
+	assert ('if __name__ == "__main__":' in static.removeComments(static.getSource())) or 
+	("if __name__ == '__main__':" in static.removeComments(static.getSource())), 'not found' 
 
 
 @passed(codeShieldedByMain, hide=False)
