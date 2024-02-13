@@ -1,4 +1,5 @@
 from checkpy import *
+from inputArgsHelper import outputOfMatchExactNumberOfStdinArgs
 
 import ast
 import re
@@ -34,7 +35,8 @@ def noStringMultiplication():
 @passed(noBreakAndImport, noStringMultiplication, hide=False)
 def handlesWrongInput():
     """rejects heights of -100 and 24, then accepts a height of 3"""
-    output = outputOf(stdinArgs=[-100, 24, 3])
+
+    output = outputOfMatchExactNumberOfStdinArgs([-100, 24, 3])
     assert '#' in output, "expected the program to print a pyramid"
 
 
