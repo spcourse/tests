@@ -2,7 +2,7 @@ from checkpy import outputOf
 from checkpy.entities.exception import InputError
 
 
-def outputOfMatchExactNumberOfStdinArgs(args):
+def outputOfExactStdin(args):
     try:
         # test with one fewer args
         output = outputOf(stdinArgs=args[:-1])
