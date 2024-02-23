@@ -24,6 +24,8 @@ def noStringMultiplication():
         if (
             isinstance(op.left, ast.Str)
             or (isinstance(op.left, ast.Name) and op.left.id in stringVars)
+            or isinstance(op.right, ast.Str)
+            or (isinstance(op.right, ast.Name) and op.right.id in stringVars)
         ):
             line = static.getSource().split('\n')[op.lineno - 1]
             raise AssertionError(
