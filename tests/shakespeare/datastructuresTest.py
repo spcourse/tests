@@ -80,7 +80,9 @@ fun5_def = (declarative
     .returnType(list)
 )
 
-test5_2 = test()(fun5_def.call(dict2).returns([('a', 1), ('a', 2), ('a', 3), ('c', 4), ('c', 5), ('c', 6), ('d', 6)]))
+dict4 = {"a": [1, 2, 3], "c": [4, 5, 6], "d": [6]}
+
+test5_2 = test()(fun5_def.call(dict4).returns([('a', 1), ('a', 2), ('a', 3), ('c', 4), ('c', 5), ('c', 6), ('d', 6)]))
 
 
 ### 6 N-intersection
