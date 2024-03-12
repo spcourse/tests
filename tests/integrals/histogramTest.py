@@ -17,29 +17,32 @@ sum_random_numbers = (declarative.function("sum_random_numbers"))
 
 @passed(correct_def_sum_random_numbers, hide=False)
 def correctBelow40():
-    """prints, on the first line, how often the sum is less than 40"""
-    firstLine = outputOf().split("\n")[0]
+    """prints, on the first line, how often the sum is less than 42"""
+    lines = outputOf().split("\n")
+    assert 1 < len(lines), "your program doesn't print anything"
+    firstLine = lines[0]
+    
     numbers = static.getNumbersFrom(firstLine)
 
-    assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
+    assert approx(0.277, abs=0.05) in numbers or approx(277, abs=50) in numbers,\
         "make sure your program outputs a sentence containing the percentage on the first line of the output"
 
-    assert '40' in firstLine or 'veertig' in firstLine or 'forty' in firstLine
+    assert '42' in firstLine
 
 
 @passed(correct_def_sum_random_numbers, hide=False)
 def correctAbove60():
-    """prints, on the second line, how often the sum is more than 60"""
+    """prints, on the second line, how often the sum is more than 58"""
     lines = outputOf().split("\n")
-    assert 1 < len(lines)
+    assert 1 <= len(lines), "your program doesn't print a second line"
     secondLine = lines[1]
 
     numbers = static.getNumbersFrom(secondLine)
 
-    assert approx(5, abs=5) in numbers or approx(0.05, abs=0.05) in numbers,\
+    assert approx(0.277, abs=0.05) in numbers or approx(277, abs=50) in numbers,\
         "make sure your program outputs a sentence containing the percentage on the second line of the output"
 
-    assert '60' in secondLine or 'zestig' in secondLine or 'sixty' in secondLine
+    assert '58' in secondLine
 
 
 @passed(correct_def_sum_random_numbers, hide=False)
