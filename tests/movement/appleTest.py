@@ -12,7 +12,7 @@ def restrict(state: declarative.FunctionState):
 
 def apple1Hint(state: declarative.FunctionState):
     t, v = state.returned
-    if v == approx(159.47, abs=1) or t == approx(4.52, abs=0.1):
+    if t == approx(159.47, abs=1) or v == approx(4.52, abs=0.1):
         raise AssertionError("Did you mix up the order of the return values?")
 
     if v == approx(44.3, abs=0.3):
@@ -31,14 +31,14 @@ testApple1 = passed(testAppleDef1, hide=False)(
     simulate_apple1
     .call(100, 0.01)
     .do(apple1Hint)
-    .returns((approx(159.47, abs=0.1), approx(4.52, abs=0.1)))
+    .returns((approx(4.52, abs=0.1), approx(159.47, abs=0.1)))
 )
 
 
 simulate_apple2 = (
     declarative.function("simulate_apple2")
     .do(restrict)
-    .params("x")
+    .params("dt")
     .returnType(float)
 )
 

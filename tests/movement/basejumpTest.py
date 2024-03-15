@@ -67,4 +67,5 @@ testBasejump3 = passed(testDef, timeout=90, hide=False)(
 @test()
 def showsGraph():
     """Either saves a graph into a file, or shows a graph on the screen."""
-    assert "savefig" in static.getFunctionCalls() or "show" in static.getFunctionCalls()
+    methods = [x.split(".")[-1] for x in static.getFunctionCalls()]
+    assert "savefig" in methods or "show" in methods
