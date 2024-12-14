@@ -11,12 +11,12 @@ def test1():
 
 @test()
 def test2():
-	"""Testing 1999"""
-	output = outputOfExactStdin([1999])
-	assert "1999 is the last year of the century!" == output.strip()
+	"""Testing 2000"""
+	output = outputOfExactStdin([2000])
+	assert "2000 is the last year of the century!" == output.strip()
 
 @test()
 def test3():
-	"""Testing 2000"""
-	output = outputOfExactStdin([2000])
-	assert "2000 is neither the first nor last year of the century." == output.strip()
+	"""Testing 1999"""
+	output = outputOfExactStdin([1999])
+	assert "1999 is neither the first nor last year of the century." == output.strip()
