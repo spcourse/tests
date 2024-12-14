@@ -1,7 +1,7 @@
 from checkpy import *
 from inputArgs import outputOfExactStdin
 
-only("divide.py")
+only("oranges.py")
 
 @test()
 def test1():
