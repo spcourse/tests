@@ -1,8 +1,9 @@
 from checkpy import *
+from inputArgs import outputOfExactStdin
 
 import ast
 
-only("prime.py")
+only("1001-primes.py")
 
 @test()
 def noBreakAndImport():
@@ -52,6 +53,6 @@ def doesNotSkipPrimes():
 
 
 @passed(exact1, timeout=90, hide=False)
-def exact1000():
-	"""input of 1000 yields output of 7919"""
-	assert 7919 in static.getNumbersFrom(outputOf(stdinArgs=[1000]))
+def exact1001():
+	"""input of 1001 yields output of 7927"""
+	assert 7927 in static.getNumbersFrom(outputOf(stdinArgs=[1001]))
