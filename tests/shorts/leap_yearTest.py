@@ -1,5 +1,5 @@
 from checkpy import *
-from inputArgs import outputOfExactStdin
+from shared import outputOfExactStdin, noImportLoop
 
 only("leap_year.py")
 

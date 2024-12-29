@@ -1,5 +1,5 @@
 from checkpy import *
-from inputArgs import outputOfExactStdin
+from shared import outputOfExactStdin, noImportLoopSubAdd
 
 only("oranges.py")
 
