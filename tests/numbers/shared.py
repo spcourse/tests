@@ -11,6 +11,8 @@ def outputOfExactStdin(args):
     assert False, "expected the program to ask more user input"
 import ast
 
+
+
 @test()
 def noBreakAndImport():
     """Checking for disallowed code."""

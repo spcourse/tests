@@ -1,6 +1,17 @@
 from checkpy import *
 from checkpy.entities.exception import InputError
 
+class ApproxString:
+    def __init__(self, base_string):
+        self._base_string = base_string.strip()
+
+    def __eq__(self, other_string):
+        other_string = other_string.strip()
+        return self._base_string == other_string
+
+    def __repr__(self):
+        return repr(self._base_string)
+        
 def outputOfExactStdin(args):
     try:
         # test with one fewer args
