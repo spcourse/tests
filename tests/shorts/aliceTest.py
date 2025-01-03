@@ -4,7 +4,7 @@ import ast
 import typing
 
 
-only("longest_word_in_file.py")
+only("alice.py")
 download("alice.txt", "https://raw.githubusercontent.com/spcourse/shorts/refs/heads/main/longest_word_in_file/alice.txt")
 
 fun = (declarative
