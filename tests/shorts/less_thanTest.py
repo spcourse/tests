@@ -1,7 +1,7 @@
 from checkpy import *
 from shared import outputOfExactStdin, noImportLoop
 
-only("less_then.py")
+only("less_than.py")
 
 @test()
 def test1():
