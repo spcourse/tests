@@ -30,7 +30,8 @@ def opensFile():
 def closesFile():
     """Closes a file using file.close()."""
     methods = [f.split(".")[1] for f in list(static.getFunctionCalls()) if "." in f]
-    assert "close" in methods
+
+    assert ("close" in methods) or (ast.With in static.AbstractSyntaxTree()), "expecting either file.close() or with ... as ..."
 
 @test(timeout=90)
 def readsFile():
