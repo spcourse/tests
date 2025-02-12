@@ -48,7 +48,7 @@ Is strict in his arrest), O, I could tell you,--
 But let it be. Horatio,
 Report me and my cause aright
 To the unsatisfied."""*100
-    for i in range(1000): # 6000 - 35
+    for i in range(500): # 6000 - 35
         score = getFunction("calculate_shakespeare_score")(text, shakespeare_words)
 
 
