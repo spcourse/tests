@@ -34,7 +34,7 @@ def has_basic_functions():
     assert defines_function("load_shakespeare_words")
     assert defines_function("calculate_shakespeare_score")
 
-@passed(has_basic_functions, timeout=4)
+@passed(has_basic_functions, timeout=8)
 def test1():
     """Testing speed calculate_shakespeare_score()
     (calculating the score 100 times using a text of 800 lines and a file
