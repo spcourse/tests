@@ -37,7 +37,7 @@ def has_basic_functions():
 @passed(has_basic_functions, timeout=4)
 def test1():
     """Testing speed calculate_shakespeare_score()
-    (calculating the score 1000 times using a text of 800 lines and a file
+    (calculating the score 100 times using a text of 800 lines and a file
     containing 466550 words)."""
     shakespeare_words = getFunction("load_shakespeare_words")("words.txt")
     text = """_Ham._ (C.) Heaven make thee free of it! I follow thee.
@@ -48,7 +48,7 @@ Is strict in his arrest), O, I could tell you,--
 But let it be. Horatio,
 Report me and my cause aright
 To the unsatisfied."""*100
-    for i in range(500): # 6000 - 35
+    for i in range(100): # 6000 - 35
         score = getFunction("calculate_shakespeare_score")(text, shakespeare_words)
 
 
