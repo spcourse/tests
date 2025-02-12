@@ -1,15 +1,26 @@
 from checkpy import *
+from pathlib import Path
 
 only("unique-word-classifier.py")
 
 download("shakespeare-words.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare-words.txt")
 download("words.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/words.txt")
-download("shakespeare.1.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare.1.txt")
-download("shakespeare.2.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare.2.txt")
-download("jonson.1.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/jonson.1.txt")
-download("jonson.2.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/jonson.2.txt")
+download("shakespeare.0379.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare.0379.txt")
+download("shakespeare.0318.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare.0318.txt")
+download("jonson.0183.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/jonson.0183.txt")
+download("jonson.0223.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/jonson.0223.txt")
+download("marlowe.0198.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/marlowe.0198.txt")
+download("marlowe.0068.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/marlowe.0068.txt")
 
 
+data = [
+    Path("shakespeare.0379.txt"),
+    Path("shakespeare.0318.txt"),
+    Path("jonson.0183.txt"),
+    Path("jonson.0223.txt"),
+    Path("marlowe.0198.txt"),
+    Path("marlowe.0068.txt")
+]
 
 @test(timeout=4)
 def test1():
@@ -30,14 +41,14 @@ To the unsatisfied."""*100
 
 
 
-# @test(timeout=10)
-# def test2():
-#     """Testing accuracies"""
-#     shakespeare_words = getFunction("load_shakespeare_words")("words.txt")
-#
-#     accs = getFunction("compute_all_accuracies")(
-#         [0.1, 0.2, 0.3, 0.4],
-#         ["jonson.1.txt", "jonson.1.txt", "shakespeare.1.txt", "shakespeare.2.txt"],
-#         shakespeare_words)
-#
-#     print(accs)
+@test(timeout=10)
+def test2():
+    """Testing accuracies"""
+    shakespeare_words = getFunction("load_shakespeare_words")("words.txt")
+
+    accs = getFunction("compute_all_accuracies")(
+        [t/40 for t in list(range(0, 4))],
+        data,
+        shakespeare_words)
+
+    print(accs)
