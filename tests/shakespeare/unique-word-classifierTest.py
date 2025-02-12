@@ -12,6 +12,11 @@ download("jonson.0223.txt", "https://raw.githubusercontent.com/spcourse/tests/re
 download("marlowe.0198.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/marlowe.0198.txt")
 download("marlowe.0068.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/marlowe.0068.txt")
 
+def defines_function(name: str) -> bool:
+    check = name in static.getFunctionDefinitions()
+    if not check:
+        raise AssertionError(f"`{name}` is not defined")
+    return check
 
 data = [
     Path("shakespeare.0379.txt"),
@@ -22,7 +27,14 @@ data = [
     Path("marlowe.0068.txt")
 ]
 
-@test(timeout=4)
+
+@test()
+def has_basic_functions():
+    """Functions calculate_shakespeare_score and load_shakespeare_words defined"""
+    assert defines_function("load_shakespeare_words")
+    assert defines_function("calculate_shakespeare_score")
+
+@passed(has_basic_functions, timeout=4)
 def test1():
     """Testing speed calculate_shakespeare_score()
     (calculating the score 1000 times using a text of 800 lines and a file
@@ -41,14 +53,28 @@ To the unsatisfied."""*100
 
 
 
-@test(timeout=10)
-def test2():
-    """Testing accuracies"""
-    shakespeare_words = getFunction("load_shakespeare_words")("words.txt")
+@passed(has_basic_functions)
+def has_compute_all_accuracies():
+    """Function compute_all_accuracies defined"""
+    assert defines_function("compute_all_accuracies")
 
-    accs = getFunction("compute_all_accuracies")(
-        [t/40 for t in list(range(0, 4))],
+@passed(has_compute_all_accuracies, timeout=10)
+def test2():
+    """Testing accuracies using files: shakespeare.0379.txt, shakespeare.0318.txt,
+    jonson.0183.txt, jonson.0223.txt, marlowe.0198.txt, marlowe.0068.txt
+    and thresholds: [0.0, 0.02, 0.04, 0.06, 0.08]
+    """
+    shakespeare_words = getFunction("load_shakespeare_words")("shakespeare-words.txt")
+
+    # for file_name in data:
+    #     print(getFunction("is_written_by_shakespeare")(file_name))
+    #     with open(file_name, "r") as file:
+    #         print(getFunction("calculate_shakespeare_score")(file.read(), shakespeare_words))
+    compute_all_accuracies = getFunction("compute_all_accuracies")
+    accs = compute_all_accuracies(
+        [0.0, 0.02, 0.04, 0.06, 0.08],
         data,
         shakespeare_words)
 
-    print(accs)
+    assert accs == [approx(0.33, abs=0.1), approx(0.83, abs=0.1),
+        approx(0.83, abs=0.1), approx(0.83, abs=0.1), approx(0.67, abs=0.1)]
