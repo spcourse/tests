@@ -1,5 +1,6 @@
 from checkpy import *
 from pathlib import Path
+import ast
 
 only("unique-word-classifier.py")
 
@@ -27,10 +28,21 @@ data = [
     Path("marlowe.0068.txt")
 ]
 
-
 @test()
+def no_timeit():
+    """Does not include timeit"""
+    calls = \
+        [node.func.id for node in static.getAstNodes(ast.Call) if
+        type(node.func) == ast.Name] + \
+        [node.func.value.id for node in static.getAstNodes(ast.Call) if
+        type(node.func) == ast.Attribute and type(node.func.value) == ast.Name]
+
+    assert "timeit" not in calls, "remove timeit from your code before sumbitting"
+
+@passed(no_timeit)
 def has_basic_functions():
     """Functions calculate_shakespeare_score and load_shakespeare_words defined"""
+
     assert defines_function("load_shakespeare_words")
     assert defines_function("calculate_shakespeare_score")
 
