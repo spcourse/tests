@@ -3,7 +3,7 @@ from unittest.mock import patch, Mock
 
 
 only("monopoly_realistic.py")
-require("monopoly.py")
+
 monkeypatch.patchMatplotlib()
 monkeypatch.patchNumpy()
 
