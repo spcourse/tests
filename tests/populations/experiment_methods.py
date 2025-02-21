@@ -16,11 +16,11 @@ def experiment_contains_add_foxes():
 @passed(contains_rabbit, contains_experiment, timeout=10, hide=False)
 def experiment_contains_rabbits_and_foxes():
     """Experiment contains 10 Rabbits and 5 Foxes after intializing:
-        experiment = Experiment(10, 5)"""
+        experiment = Experiment(1, 10, 5)"""
     Rabbit = getModule().Rabbit._function
     Fox = getModule().Fox._function
     Experiment = getModule().Experiment._function
-    experiment = Experiment(10, 5)
+    experiment = Experiment(1, 10, 5)
     rabbits_in_experiment = collect_all_of_type(experiment, Rabbit)
     foxes_in_experiment = collect_all_of_type(experiment, Fox)
 

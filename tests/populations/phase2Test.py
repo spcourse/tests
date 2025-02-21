@@ -10,10 +10,10 @@ only("phase2.py")
 @passed(contains_rabbit, contains_experiment, timeout=10, hide=False)
 def experiment_contains_rabbits():
     """Experiment contains 10 Rabbits, after intializing:
-        experiment = Experiment(10)"""
+        experiment = Experiment(1, 10)"""
     Rabbit = getModule().Rabbit._function
     Experiment = getModule().Experiment._function
-    experiment = Experiment(10)
+    experiment = Experiment(1, 10)
     rabbits_in_experiment = collect_all_of_type(experiment, Rabbit)
 
     assert len(rabbits_in_experiment) <= 10, "Experiment contains more than 10 Rabbits"

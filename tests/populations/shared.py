@@ -131,7 +131,7 @@ def extract_main_lines(file_path: str) -> str:
         current_line += 1
 
     return [line for line in result_lines if \
-        line.split(" ")[0] not in ["class", "import", ""] and \
+        line.split(" ")[0] not in ["class", "import", "", "from"] and \
         line[0] != "#"]
 
 
