@@ -12,11 +12,11 @@ only("phase1.py")
 def test2():
     """Experiment contains one Rabbit, after intializing:
         rabbit = Rabbit(0.1, 0.1, 10)
-        experiment = Experiment(rabbit)"""
+        experiment = Experiment(1, rabbit)"""
     Rabbit = getModule().Rabbit._function
     Experiment = getModule().Experiment._function
     rabbit = Rabbit(0.1, 0.1, 10)
-    experiment = Experiment(rabbit)
+    experiment = Experiment(1, rabbit)
     rabbits_in_experiment = collect_all_of_type(experiment, Rabbit)
 
     assert len(rabbits_in_experiment) <= 1, "Experiment contains more than one Rabbit"
