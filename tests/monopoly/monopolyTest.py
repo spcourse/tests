@@ -19,7 +19,7 @@ def hasthrow_two_dice():
 def correctDice():
 	"""returns a correct value for a throw with two dice"""
 	# https://xkcd.com/221/
-	assert getFunction("throw_two_dice")() == approx(7, abs=5)
+	assert approx(7, abs=5) == getFunction("throw_two_dice")()
 
 
 @passed(correctDice, hide=False)
@@ -49,7 +49,7 @@ def correctAverageTrump(test):
 
 		assert result is not None,\
 			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
-		assert result == approx(38, abs=1)
+		assert approx(38, abs=1) == result 
 
 
 @passed(hassimulate_monopolyAndsimulate_monopoly_games, timeout=120, hide=False)
@@ -65,4 +65,4 @@ def correctAverageStartingMoney():
 		assert result is not None,\
 			"Make sure that the function simulate_monopoly_games returns the average required number of throws and nothing else"
 
-		assert result == approx(142, abs=1)
+		assert approx(142, abs=1) == result
