@@ -1,7 +1,9 @@
 from checkpy import *
 from pathlib import Path
 import ast
-
+import time
+import shakespeare_fast
+import shakespeare_slow
 only("unique-word-classifier.py")
 
 download("shakespeare-words.txt", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/shakespeare-words.txt")
@@ -46,12 +48,13 @@ def has_basic_functions():
     assert defines_function("load_shakespeare_words")
     assert defines_function("calculate_shakespeare_score")
 
-@passed(has_basic_functions, timeout=8)
-def test1():
-    """Testing speed calculate_shakespeare_score()
-    (calculating the score 100 times using a text of 800 lines and a file
-    containing 466550 words)."""
-    shakespeare_words = getFunction("load_shakespeare_words")("words.txt")
+@passed(has_basic_functions, timeout=16)
+def speed_test1():
+    """Testing speed improvement calculate_shakespeare_score()
+        - using a text of 80 lines
+        - a shakespeare_words file containing 466550 words
+        - repeated 20 times"""
+
     text = """_Ham._ (C.) Heaven make thee free of it! I follow thee.
 You that look pale and tremble at this chance,
 That are but mutes or audience to this act,
@@ -59,10 +62,61 @@ Had I but time (as this fell sergeant, death,[79]
 Is strict in his arrest), O, I could tell you,--
 But let it be. Horatio,
 Report me and my cause aright
-To the unsatisfied."""*100
-    for i in range(100): # 6000 - 35
-        score = getFunction("calculate_shakespeare_score")(text, shakespeare_words)
+To the unsatisfied."""*10
 
+    user_duration = test_performance(
+        getFunction("load_shakespeare_words"),
+        getFunction("calculate_shakespeare_score"),
+        text
+    )
+
+    slow_duration = test_performance(
+        shakespeare_slow.load_shakespeare_words,
+        shakespeare_slow.calculate_shakespeare_score,
+        text
+    )
+    assert slow_duration/2 > user_duration, f"not optimized enough: original " + \
+    f"solution takes {slow_duration:.4f} seconds, your\nsolution takes " + \
+    f"{user_duration:.4f} seconds."
+
+@passed(speed_test1, timeout=8, hide=False)
+def speed_test2():
+    """Testing if your solution is as fast as the optimal solution."""
+
+    text = """_Ham._ (C.) Heaven make thee free of it! I follow thee.
+You that look pale and tremble at this chance,
+That are but mutes or audience to this act,
+Had I but time (as this fell sergeant, death,[79]
+Is strict in his arrest), O, I could tell you,--
+But let it be. Horatio,
+Report me and my cause aright
+To the unsatisfied."""*10
+
+    user_duration = test_performance(
+        getFunction("load_shakespeare_words"),
+        getFunction("calculate_shakespeare_score"),
+        text
+    )
+
+    optimal_duration = test_performance(
+        shakespeare_fast.load_shakespeare_words,
+        shakespeare_fast.calculate_shakespeare_score,
+        text
+    )
+
+    assert optimal_duration*2 > user_duration, f"not fully optimized: optimal " + \
+    f"solution takes {optimal_duration:.4f} seconds, your\nsolution takes " + \
+    f"{user_duration:.4f} seconds.\n" + \
+    "(Tip: You might want to convert the shakespeare_words to a set _before_\nyou pass it to calculate_shakespeare_score())"
+
+
+def test_performance(load_words, calculate_score, text):
+    shakespeare_words = load_words("words.txt")
+    start = time.time()
+    for i in range(20): # 6000 - 35
+        score = calculate_score(text, shakespeare_words)
+    end = time.time()
+    return end - start
 
 
 @passed(has_basic_functions)
