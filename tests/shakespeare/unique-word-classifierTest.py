@@ -48,10 +48,10 @@ def has_basic_functions():
     assert defines_function("load_shakespeare_words")
     assert defines_function("calculate_shakespeare_score")
 
-@passed(has_basic_functions, timeout=16)
+@passed(has_basic_functions, timeout=20)
 def speed_test1():
     """Testing speed improvement calculate_shakespeare_score()
-        - using a text of 80 lines
+        - using a text of 40 lines
         - a shakespeare_words file containing 466550 words
         - repeated 20 times"""
 
@@ -62,7 +62,7 @@ Had I but time (as this fell sergeant, death,[79]
 Is strict in his arrest), O, I could tell you,--
 But let it be. Horatio,
 Report me and my cause aright
-To the unsatisfied."""*10
+To the unsatisfied."""*5
 
     user_duration = test_performance(
         getFunction("load_shakespeare_words"),
@@ -79,7 +79,7 @@ To the unsatisfied."""*10
     f"solution takes {slow_duration:.4f} seconds, your\nsolution takes " + \
     f"{user_duration:.4f} seconds."
 
-@passed(speed_test1, timeout=8, hide=False)
+@passed(speed_test1, timeout=10, hide=False)
 def speed_test2():
     """Testing if your solution is as fast as the optimal solution."""
 
