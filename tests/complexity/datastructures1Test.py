@@ -1,5 +1,6 @@
 from checkpy import *
 
+only("datastructures1.py")
 
 ### 1 Lemmas
 fun1_def = (declarative
