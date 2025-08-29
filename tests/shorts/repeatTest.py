@@ -29,14 +29,14 @@ def noStringMultiplication():
 @test()
 def test1():
     """Testing hello, 5"""
-    output = outputOfExactStdin(["hello", 5])
+    output = outputOf(stdinArgs=["hello", 5])
     assert "hellohellohellohellohello" == output.strip()
     assert "hellohellohellohellohello\n" == output, "you forgot a new-line at the end of your output"
 
 @test()
 def test2():
     """Testing #, 18"""
-    output = outputOfExactStdin(["#", 18])
+    output = outputOf(stdinArgs=["#", 18])
     assert "##################" == output.strip()
     assert "##################\n" == output, "you forgot a new-line at the end of your output"
 
