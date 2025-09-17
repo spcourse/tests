@@ -2,6 +2,7 @@ import typing
 from checkpy import *
 
 only("weather5.py")
+download("weather1.py", "https://raw.githubusercontent.com/spcourse/tests/refs/heads/master/data/weather1.py")
 download("DeBiltTempMaxOLD.txt", "https://github.com/spcourse/bigdata/raw/main/data/DeBiltTempMaxOLD.txt")
 download("DeBiltTempMinOLD.txt", "https://github.com/spcourse/bigdata/raw/main/data/DeBiltTempMinOLD.txt")
 
