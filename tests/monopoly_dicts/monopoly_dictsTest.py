@@ -198,7 +198,7 @@ def step2_missingProperties():
 
 @test()
 def hasIsUnowned():
-    """is_unowned helper exists and works on toy data"""
+    """is_unowned helper works on toy data"""
     f = getFunction("is_unowned")
     assert f is not None, "Define is_unowned(position, owned_sets) as described in Step 3.1."
     assert f(14, [{12,16}, {18}]) is True, "is_unowned should return True when nobody owns the tile."
