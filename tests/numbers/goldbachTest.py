@@ -6,9 +6,17 @@ only("goldbach.py")
 
 @test()
 def noBreakAndImport():
-    """the program does not use break or import statements"""
-    assert ast.Import not in static.AbstractSyntaxTree(), "you cannot use import statements"
-    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
+    """the program does not use break or import statements (except for 'import math')"""
+	imports = static.getAstNodes(ast.Import)
+	for node in imports:
+		for alias in node.names:
+			if alias.name != "math":
+				raise AssertionError("you cannot use import statements (only 'import math' is allowed)")
+
+	if static.getAstNodes(ast.ImportFrom):
+		raise AssertionError("you cannot use import statements (only 'import math' is allowed)")
+
+	assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
 
 @passed(noBreakAndImport, timeout=90, hide=False)
 def allEvenNumbersInOutput():
