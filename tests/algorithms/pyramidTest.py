@@ -22,9 +22,9 @@ def noStringMultiplication():
 
     for op in ops:
         if (
-            isinstance(op.left, ast.Str)
+            isString(op.left)
             or (isinstance(op.left, ast.Name) and op.left.id in stringVars)
-            or isinstance(op.right, ast.Str)
+            or isString(op.right)
             or (isinstance(op.right, ast.Name) and op.right.id in stringVars)
         ):
             line = static.getSource().split('\n')[op.lineno - 1]
@@ -81,6 +81,11 @@ def getPyramid(height):
     return "\n".join(pyramid), re.compile(regex, re.MULTILINE)
 
 
+def isString(node):
+    """is this node a string literal?"""
+    return isinstance(node, ast.Constant) and isinstance(node.value, str)
+
+
 def getStringVars():
     """get variables that are assigned a string in the AST"""
     assignments = static.getAstNodes(ast.Assign)
@@ -88,7 +93,7 @@ def getStringVars():
     for assignment in assignments:
         for target in assignment.targets:
             if isinstance(target, ast.Name):
-                if (isinstance(assignment.value, ast.Str)
+                if (isString(assignment.value)
                     or (isinstance(assignment.value, ast.Name) and assignment.value.id in vars)):
                     vars.add(target.id)
     return vars
