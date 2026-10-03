@@ -60,12 +60,17 @@ def assert_config_unchanged(config, original):
     )
 
 
-def limited_roller(rolls, message):
+class RollLimitReached(Exception):
+    """Raised when a test requests more dice rolls than expected."""
+    pass
+
+
+def limited_roller(rolls):
     """Return a finite sequence of dice rolls.
 
     If student code keeps asking for rolls, the simulation probably did not stop when
-    expected. Raising our own AssertionError gives a useful message instead of waiting
-    for Checkpy's timeout.
+    expected. RollLimitReached is caught outside the student function so Checkpy can
+    show a short, useful error message instead of a wrapped exception.
     """
     rolls = iter(rolls)
 
@@ -73,9 +78,41 @@ def limited_roller(rolls, message):
         try:
             return next(rolls)
         except StopIteration:
-            raise AssertionError(message)
+            raise RollLimitReached()
 
     return roller
+
+
+def caused_by(error, exception_type):
+    """Return True if an exception in the chain has the requested type."""
+    while error is not None:
+        if isinstance(error, exception_type):
+            return True
+
+        error = error.__cause__ or error.__context__
+
+    return False
+
+
+def run_with_limited_roller(function_name, args, rolls, message):
+    """Run a student function with fixed dice and a readable roll-limit error.
+
+    Checkpy wraps exceptions raised while student functions are running, but keeps
+    the original exception in the exception chain. If the roller is exhausted, find
+    RollLimitReached in that chain and replace it with the test-specific message.
+    Other student exceptions are left untouched.
+    """
+    roller = Mock(side_effect=limited_roller(rolls))
+
+    try:
+        with patch.object(getModule(), "throw_two_dice", roller):
+            outcome = getFunction(function_name)(*args)
+    except Exception as error:
+        if caused_by(error, RollLimitReached):
+            raise AssertionError(message) from None
+        raise
+
+    return outcome, roller
 
 
 # ============================================================
@@ -147,10 +184,9 @@ def correctAverageDiff1():
         "The simulation did not finish with fixed dice rolls. "
         "Check the game loop, property ownership and stopping condition."
     )
-    roller = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 1000, finish_message
+    )
 
     assert Type(float) == outcome, \
         "Make sure that simulate_monopoly_games only returns the difference in the number of streets owned."
@@ -182,13 +218,12 @@ def usesLapMoney():
         "Check the game loop, property ownership and stopping condition."
     )
 
-    roller_90 = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-    with patch.object(getModule(), "throw_two_dice", roller_90):
-        outcome_90 = getFunction("simulate_monopoly_games")(1, cfg_90)
-
-    roller_100 = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-    with patch.object(getModule(), "throw_two_dice", roller_100):
-        outcome_100 = getFunction("simulate_monopoly_games")(1, cfg_100)
+    outcome_90, _ = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg_90), [3] * 1000, finish_message
+    )
+    outcome_100, _ = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg_100), [3] * 1000, finish_message
+    )
 
     assert Type(float) == outcome_90 and Type(float) == outcome_100, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -216,13 +251,12 @@ def usesStartingMoney():
         "Check the game loop, property ownership and stopping condition."
     )
 
-    equal_roller = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-    with patch.object(getModule(), "throw_two_dice", equal_roller):
-        equal = getFunction("simulate_monopoly_games")(1, equal_cfg)
-
-    richer_roller = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-    with patch.object(getModule(), "throw_two_dice", richer_roller):
-        p2_richer = getFunction("simulate_monopoly_games")(1, richer_cfg)
+    equal, _ = run_with_limited_roller(
+        "simulate_monopoly_games", (1, equal_cfg), [3] * 1000, finish_message
+    )
+    p2_richer, _ = run_with_limited_roller(
+        "simulate_monopoly_games", (1, richer_cfg), [3] * 1000, finish_message
+    )
 
     assert Type(float) == equal and Type(float) == p2_richer, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -246,10 +280,9 @@ def doesntChangeConfig():
         "The simulation did not finish with fixed dice rolls. "
         "Check the game loop, property ownership and stopping condition."
     )
-    roller = Mock(side_effect=limited_roller([3] * 1000, finish_message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        _ = getFunction("simulate_monopoly")(cfg)
+    _, roller = run_with_limited_roller(
+        "simulate_monopoly", (cfg,), [3] * 1000, finish_message
+    )
 
     assert_config_unchanged(cfg, original)
 
@@ -271,10 +304,9 @@ def correctResultsDifferentSettings():
             "The simulation did not finish with fixed dice rolls. "
             "Check the game loop, property ownership and stopping condition."
         )
-        roller = Mock(side_effect=limited_roller([dice] * 1000, finish_message))
-
-        with patch.object(getModule(), "throw_two_dice", roller):
-            outcome = getFunction("simulate_monopoly_games")(1, cfg)
+        outcome, roller = run_with_limited_roller(
+            "simulate_monopoly_games", (1, cfg), [dice] * 1000, finish_message
+        )
 
         message = (
             f"This test uses dice={dice} and starting_money={starting_money}. "
@@ -306,10 +338,9 @@ def step2_usesPropertyPrices():
         "This test changes properties[1] from 60 to 100. "
         "Check that property prices are read from board_config['properties'] and are not hardcoded."
     )
-    roller = Mock(side_effect=limited_roller([3] * 400, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 400, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -333,10 +364,9 @@ def step2_usesPropertyPositions():
         "This test moves one property from position 23 to position 22. "
         "Check that buyable positions are taken from board_config['properties'] and are not hardcoded."
     )
-    roller = Mock(side_effect=limited_roller([3] * 400, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 400, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -356,10 +386,9 @@ def step2_usesBoardSize():
         "This test uses board_size=41. "
         "Check that the board size is not hardcoded in your simulation."
     )
-    roller = Mock(side_effect=limited_roller([11, 7] * 100, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [11, 7] * 100, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -381,10 +410,9 @@ def step2_usesNumberOfProperties():
         "Check that the number of properties needed to finish the game is based on "
         "board_config['properties'] and is not hardcoded."
     )
-    roller = Mock(side_effect=limited_roller([3] * 6, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 6, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return the average difference as a float."
@@ -421,29 +449,57 @@ def hasIsUnowned():
         "is_unowned should also work when both ownership sets are empty."
 
 
+@passed(hasIsUnowned, timeout=30, hide=False)
+def canBuyWithExactMoney():
+    """A property can be bought with exactly enough money"""
+    cfg = create_config(
+        lap_money=0,
+        starting_money=[100, 0],
+        properties={3: 100},
+    )
+    original = deepcopy(cfg)
+
+    # Player 1 has exactly the property price; Player 2 cannot buy it.
+    # With a strict '>' check nobody can ever buy the property, so the roll limit
+    # gives a direct hint about the affordability check.
+    message = (
+        "This test uses lap_money=0, starting_money=[100, 0] and properties={3: 100}. "
+        "A player should be able to buy a property when their money is equal to its price."
+    )
+
+    outcome, _ = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 6, message
+    )
+
+    assert Type(float) == outcome, \
+        "simulate_monopoly_games should return a float."
+
+    assert outcome == 1.0, message
+    assert_config_unchanged(cfg, original)
+
+
 # ============================================================
 # Step 3.2: ownership via sets
 # ============================================================
 
-@passed(hasIsUnowned, timeout=30, hide=False)
+@passed(canBuyWithExactMoney, timeout=30, hide=False)
 def player1_buys_first():
     """Player 1 buys an affordable unowned property first"""
     cfg = create_config(
         lap_money=0,
-        starting_money=[100, 100],
+        starting_money=[101, 101],
         properties={3: 100},
     )
     original = deepcopy(cfg)
 
     # Both players land on position 3, but Player 1 gets there first and buys it.
     message = (
-        "This test uses lap_money=0, starting_money=[100, 100] and properties={3: 100}. "
+        "This test uses lap_money=0, starting_money=[101, 101] and properties={3: 100}. "
         "With dice=3, Player 1 should be the first player to buy the property."
     )
-    roller = Mock(side_effect=limited_roller([3] * 6, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 6, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return a float."
@@ -457,7 +513,7 @@ def player2_buys_when_player1_cannot_afford():
     """Player 2 can buy a property Player 1 cannot afford"""
     cfg = create_config(
         lap_money=0,
-        starting_money=[0, 100],
+        starting_money=[0, 101],
         properties={3: 100},
     )
     original = deepcopy(cfg)
@@ -465,13 +521,12 @@ def player2_buys_when_player1_cannot_afford():
     # Player 1 reaches position 3 first but has no money. The property must remain
     # available so Player 2 can buy it on the next turn.
     message = (
-        "This test uses lap_money=0, starting_money=[0, 100] and properties={3: 100}. "
+        "This test uses lap_money=0, starting_money=[0, 101] and properties={3: 100}. "
         "A player who cannot afford a property should leave it available for the other player."
     )
-    roller = Mock(side_effect=limited_roller([3] * 6, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [3] * 6, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return a float."
@@ -497,10 +552,9 @@ def owned_property_cannot_be_bought_again():
         "properties={2: 100, 4: 100}. With dice=2, both players land on position 2, "
         "but it must only be bought once."
     )
-    roller = Mock(side_effect=limited_roller([2] * 8, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [2] * 8, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return a float."
@@ -515,7 +569,7 @@ def changed_board_configuration():
     cfg = create_config(
         board_size=10,
         lap_money=100,
-        starting_money=[100, 100],
+        starting_money=[101, 101],
         properties={2: 100, 4: 100, 6: 100},
     )
     original = deepcopy(cfg)
@@ -524,14 +578,13 @@ def changed_board_configuration():
     # Player 1 buys position 2, Player 2 buys position 4, and Player 2 later buys 6.
     # The expected final difference is therefore -1.
     message = (
-        "This test uses board_size=10, lap_money=100, starting_money=[100, 100], "
+        "This test uses board_size=10, lap_money=100, starting_money=[101, 101], "
         "properties={2: 100, 4: 100, 6: 100} and alternating dice rolls 2, 4. "
         "Check that movement, buying and ownership all use the current configuration."
     )
-    roller = Mock(side_effect=limited_roller([2, 4] * 10, message))
-
-    with patch.object(getModule(), "throw_two_dice", roller):
-        outcome = getFunction("simulate_monopoly_games")(1, cfg)
+    outcome, roller = run_with_limited_roller(
+        "simulate_monopoly_games", (1, cfg), [2, 4] * 10, message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return a float."
@@ -552,10 +605,9 @@ def multiple_games_start_fresh():
         "A game with the default config and dice=3 should finish normally. "
         "Check the game loop and its stopping condition."
     )
-    single_roller = Mock(side_effect=limited_roller([3] * 300, single_message))
-
-    with patch.object(getModule(), "throw_two_dice", single_roller):
-        single_outcome = getFunction("simulate_monopoly")(cfg)
+    single_outcome, single_roller = run_with_limited_roller(
+        "simulate_monopoly", (cfg,), [3] * 300, single_message
+    )
 
     single_rolls = single_roller.call_count
 
@@ -574,16 +626,12 @@ def multiple_games_start_fresh():
         "Each game should start with fresh positions, money and ownership; state from one game "
         "must not affect the next game."
     )
-    multi_roller = Mock(side_effect=limited_roller([3] * (2 * single_rolls + 20), multi_message))
-
-    try:
-        with patch.object(getModule(), "throw_two_dice", multi_roller):
-            outcome = getFunction("simulate_monopoly_games")(2, cfg)
-    except Exception as error:
-        assert False, (
-            multi_message + " "
-            f"Running the two games raised {type(error).__name__}: {error}"
-        )
+    outcome, multi_roller = run_with_limited_roller(
+        "simulate_monopoly_games",
+        (2, cfg),
+        [3] * (2 * single_rolls + 20),
+        multi_message
+    )
 
     assert Type(float) == outcome, \
         "simulate_monopoly_games should return the average difference as a float."
