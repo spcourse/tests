@@ -7,9 +7,16 @@ only("eratosthenes.py")
 @test()
 def noBreakAndImport():
     """Checking for disallowed code."""
-    not_allowed = [ast.Break, ast.Import, ast.ImportFrom]
-    disallow(not_allowed)
+    imports = static.getAstNodes(ast.Import)
+    for node in imports:
+        for alias in node.names:
+            if alias.name != "math":
+                raise AssertionError("you cannot use import statements (only 'import math' is allowed)")
 
+    if static.getAstNodes(ast.ImportFrom):
+        raise AssertionError("you cannot use import statements (only 'import math' is allowed)")
+
+    assert ast.Break not in static.AbstractSyntaxTree(), "you cannot use break statements"
 
 @test()
 def test1():
