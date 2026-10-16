@@ -144,8 +144,71 @@ def hasSimulateFunctions():
     assert len(simulate_one_game.parameters) == 1, "simulate_monopoly must accept exactly one parameter: board_config."
     assert len(simulate_multiple_games.parameters) == 2, "simulate_monopoly_games must accept two parameters: games, board_config."
 
-
 @passed(hasSimulateFunctions, timeout=30, hide=False)
+def simulationFunctionsRun():
+    """Simulation functions can be executed"""
+    cfg = default_config()
+
+    message = (
+        "The simulation did not finish with fixed dice rolls. "
+        "Check whether simulate_monopoly() runs correctly."
+    )
+
+    run_with_limited_roller(
+        "simulate_monopoly",
+        (cfg,),
+        [3] * 1000,
+        message,
+    )
+
+    message = (
+        "The simulation did not finish with fixed dice rolls. "
+        "Check whether simulate_monopoly_games() runs correctly."
+    )
+
+    run_with_limited_roller(
+        "simulate_monopoly_games",
+        (1, cfg),
+        [3] * 1000,
+        message,
+    )
+
+@passed(simulationFunctionsRun, timeout=30, hide=False)
+def hasTwoPlayerReturnTypes():
+    """Simulation functions return values for the two-player version"""
+    cfg = default_config()
+
+    message = (
+        "This check expects the two-player version from monopoly_realistic.py. "
+        "If you completed the optional Many Players assignment, do not use "
+        "monopoly-nplayer.py as the starting point for this assignment."
+    )
+
+    single_result, _ = run_with_limited_roller(
+        "simulate_monopoly",
+        (cfg,),
+        [3] * 1000,
+        message,
+    )
+
+    assert type(single_result) is int, (
+        "simulate_monopoly(board_config) should return one integer: the difference "
+        "in properties owned by Player 1 and Player 2. " + message
+    )
+
+    multiple_result, _ = run_with_limited_roller(
+        "simulate_monopoly_games",
+        (1, cfg),
+        [3] * 1000,
+        message,
+    )
+
+    assert type(multiple_result) is float, (
+        "simulate_monopoly_games(games, board_config) should return one float: "
+        "the average difference between Player 1 and Player 2. " + message
+    )
+
+@passed(hasTwoPlayerReturnTypes, timeout=30, hide=False)
 def usesNumberOfGames():
     """simulate_monopoly_games simulates and averages the requested number of games"""
     config = default_config()
