@@ -145,7 +145,7 @@ def secondFit():
 
 @passed(firstFit, secondFit, timeout=30, hide=False)
 def legend():
-    """the legend shows which line belongs to which parameterisation"""
+    """the legend shows which line belongs to which parameterization"""
     legends = [ax.get_legend() for ax in allAxes()]
     texts = [t.get_text() for lg in legends if lg is not None for t in lg.get_texts()]
     assert texts, (
